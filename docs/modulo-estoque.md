@@ -1,3 +1,4 @@
+```mermaid
 classDiagram
 direction TB
     class EnumCategoria {
@@ -35,3 +36,5 @@ direction TB
 
     Estoque <|-- ItemEstoque
     EnumCategoria -- ItemEstoque
+```
+
