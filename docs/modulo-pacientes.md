@@ -1,6 +1,6 @@
 # Módulo de Pacientes – Diagramas
 
-Este documento apresenta os diagramas de arquitetura e classes do módulo de Pacientes.
+Este documento apresenta os diagramas de classes do módulo de Pacientes.
 
 ## 1. Diagrama de Classes
 
