@@ -7,6 +7,8 @@ Este documento serve como uma introdução e referência para os participantes d
 Os alunos e colaboradores devem consultar os seguintes arquivos para obter informações detalhadas sobre o projeto:
 
 - **Especificações do DApp:** Para entender os requisitos dos modulos on-chain (contratos inteligentes) técnicos e funcionais do MedVault, confira [SPECIFICATION.md](SPECIFICATION.md).
+    - [Módulo de Pacientes](./modulo-pacientes.md)
+    - [Módulo de Procedimentos](./modulo_procedimentos.md)
 
 - **Interface do Usuário:** Detalhes sobre a interface que os usuários irão interagir estão descritos em [UI.md](UI.md).
     - ainda não descritas
