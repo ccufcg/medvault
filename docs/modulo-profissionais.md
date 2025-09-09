@@ -13,7 +13,7 @@ Contract : -address owner
 Contract : -bool active
 Contract : +deactivateContract()
 Contract : +activateContract()
-Contract : +getProfessional(address wallet)
+Contract : +getProfessional(address wallet) Professional
 Contract : +deactivateProfessional(address wallet)
 Contract : +activateProfessional(address wallet)
 Contract : +newProfessional(address wallet, uint legacyId, string name, enum category, string councilRegistration, bool active)
