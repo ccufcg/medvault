@@ -23,8 +23,9 @@ direction TB
 
     class Estoque {
 	    +Adress CAdress
-	    +getItemFromUuid(uint uuid)
-	    +getItemFromCategoria(string categoria)
+	    +listItemFromUuid(uint uuid)
+	    +listItemFromCategoria(string categoria)
+		+getItemFromId(uint id)
 	    +addItem(string lote, enum categoria, uint dataValidade,bool altoCusto)
 	    -verificarItem(uint uuid)
 	    -verificarValidadeItem(uint uuid)
