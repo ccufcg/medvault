@@ -9,15 +9,15 @@ Professional : string councilRegistration
 Professional : bool active
 
 class ProfessionalManager
-Contract : -address owner
-Contract : -bool active
-Contract : +deactivateContract()
-Contract : +activateContract()
-Contract : +getProfessional(address wallet) Professional
-Contract : +deactivateProfessional(address wallet)
-Contract : +activateProfessional(address wallet)
-Contract : +newProfessional(address wallet, uint legacyId, string name, enum category, string councilRegistration, bool active)
-Contract : +event ProfessionalRegistered(address wallet, uint legacyId)
+ProfessionalManager : -address owner
+ProfessionalManager : -bool active
+ProfessionalManager : +deactivateContract()
+ProfessionalManager : +activateContract()
+ProfessionalManager : +getProfessional(address wallet) Professional
+ProfessionalManager : +deactivateProfessional(address wallet)
+ProfessionalManager : +activateProfessional(address wallet)
+ProfessionalManager : +newProfessional(address wallet, uint legacyId, string name, enum category, string councilRegistration, bool active)
+ProfessionalManager : +event ProfessionalRegistered(address wallet, uint legacyId)
 
-Contract o-- Professional : professionals
+ProfessionalManager o-- Professional : professionals
 ```
