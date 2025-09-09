@@ -8,7 +8,7 @@ Professional : enum category
 Professional : string councilRegistration
 Professional : bool active
 
-class Contract
+class ProfessionalManager
 Contract : -address owner
 Contract : -bool active
 Contract : +deactivateContract()
