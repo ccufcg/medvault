@@ -9,13 +9,14 @@ struct Paciente {
     string nome;
     uint256 dataNascimento;
     bool ativo;
-    Procedimento[] procedimentos;
-    bytes32[] wallets; // Wallets são os mútiplos ids que teremos, logo, serão bytes32
+    // Armazenar esses dois aqui é muito problemático pra função createPaciente() !!!
+    // Procedimento[] procedimentos;
+    // bytes32[] wallets; // Wallets são os mútiplos ids que teremos, logo, serão bytes32
 }
 
 
 contract Pacientes {
-    // mapping(address => bytes32[]) private pacienteIdentificadores; ~> Acho que não precissa pois o mapping adress => Paciente já faz isso implicitamente 
+    mapping(address => bytes32[]) private pacienteIdentificadores;
     mapping(address => Paciente) public pacientes;
     mapping(bytes32 => address) idToPaciente;
     uint256 private idCounter;
@@ -29,9 +30,7 @@ contract Pacientes {
             id: generatedId,
             nome: _nome,
             dataNascimento: _dataNascimento,
-            ativo: true,
-            procedimentos: new Procedimento[](0),
-            wallets: new bytes32[](0)
+            ativo: true
         });
 
     }
