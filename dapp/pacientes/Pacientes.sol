@@ -8,7 +8,7 @@ struct Paciente {
     address id;
     string nome;
     uint256 dataNascimento;
-    bool ativo;
+    bool pacienteAtivo;
     // Armazenar esses dois aqui é muito problemático pra função createPaciente() !!!
     // Procedimento[] procedimentos;
     // bytes32[] wallets; // Wallets são os mútiplos ids que teremos, logo, serão bytes32
@@ -30,11 +30,15 @@ contract Pacientes {
             id: generatedId,
             nome: _nome,
             dataNascimento: _dataNascimento,
-            ativo: true
+            pacienteAtivo: true
         });
-
     }
 
+    function desativarPaciente(bytes32 _id) public {
+        address pacienteAddress = idToPaciente[_id];
+        require(pacienteAddress != address(0), "Nao existe paciente com ID informado");
+        pacientes[pacienteAddress].pacienteAtivo = false;
+    }
 
 }
 
