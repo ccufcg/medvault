@@ -31,6 +31,7 @@ contract Pacientes is AccessControl, IPacientes {
     }
 
     mapping(uint256 => Paciente) public pacientes;
+    mapping(uint256 => address[]) private pacienteWallets; // Comentário: New mapping to store all wallets for a patient
     mapping(address => uint256) private walletToPacienteId;
     mapping(uint256 => bytes32[]) private pacienteProcedimentos;
 
@@ -66,6 +67,7 @@ contract Pacientes is AccessControl, IPacientes {
         });
 
         walletToPacienteId[walletId] = idCounter;
+        pacienteWallets[idCounter].push(walletId); // Comentário: Now populating the new mapping.
 
         emit PacienteRegistrado(idCounter, walletId);
         emit WalletAssociada(idCounter, walletId);
@@ -112,10 +114,11 @@ contract Pacientes is AccessControl, IPacientes {
         novaWallet = address(uint160(uint256(keccak256(abi.encodePacked(
             block.timestamp,
             _pacienteId,
-            walletToPacienteId[pacientes[_pacienteId].idMedico] // Usa o ID do médico para garantir unicidade
+            pacientes[_pacienteId].idMedico
         )))));
 
         walletToPacienteId[novaWallet] = _pacienteId;
+        pacienteWallets[_pacienteId].push(novaWallet); // Comentário: Now populating the new mapping.
 
         emit WalletAssociada(_pacienteId, novaWallet);
     }
@@ -123,6 +126,27 @@ contract Pacientes is AccessControl, IPacientes {
     function removerWallet(address _wallet) public onlyDiretorMedico {
         uint256 pacienteId = walletToPacienteId[_wallet];
         require(pacienteId != 0, "Wallet nao associada a nenhum paciente");
+        
+        // Comentário: Lógica para remover a wallet do array `pacienteWallets`
+        address[] storage wallets = pacienteWallets[pacienteId];
+        uint256 length = wallets.length;
+        bool found = false;
+        for (uint256 i = 0; i < length; i++) {
+            if (wallets[i] == _wallet) {
+                wallets[i] = wallets[length - 1];
+                wallets.pop();
+                found = true;
+                break;
+            }
+        }
+        require(found, "Wallet nao associada a este paciente.");
+
+        // Comentário: Remove a associação da wallet para o ID
         delete walletToPacienteId[_wallet];
+    }
+
+    function listarWallets(uint256 _pacienteId) public view onlyDiretorMedico returns (address[] memory) {
+        require(_pacienteId > 0 && pacientes[_pacienteId].id != 0, "Paciente nao existe");
+        return pacienteWallets[_pacienteId];
     }
 }
