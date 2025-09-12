@@ -8,17 +8,17 @@ interface IPacientes {
 }
 
 contract Pacientes is AccessControl, IPacientes {
-
     bytes32 public constant DIRETOR_ROLE = keccak256("DIRETOR_ROLE");
     bytes32 public constant MEDICO_ROLE = keccak256("MEDICO_ROLE");
 
     constructor(address diretorMedico) {
         _grantRole(DEFAULT_ADMIN_ROLE, msg.sender);
         _grantRole(DIRETOR_ROLE, diretorMedico);
+        _grantRole(MEDICO_ROLE, msg.sender);// Para fins de teste de funcionamento dos métodos
     }
 
     struct Procedimento {
-    // Importar procedimento
+        // Importar procedimentos depois
         string nome;
     }
 
@@ -28,43 +28,36 @@ contract Pacientes is AccessControl, IPacientes {
         string nome;
         uint256 dataNascimento;
         bool pacienteAtivo;
-    // Armazenar esses dois aqui é muito problemático pra função createPaciente() !!!
-    // Procedimento[] procedimentos;
-    // bytes32[] wallets; // Wallets são os mútiplos ids que teremos, logo, serão bytes32
     }
 
-
-    mapping(address => Paciente) public pacientes;
-    mapping(bytes32 => address) private idToPaciente;
-    mapping(uint256 => address[]) private pacienteWallets;
+    mapping(uint256 => Paciente) public pacientes;
+    mapping(address => uint256) private walletToPacienteId;
     mapping(uint256 => bytes32[]) private pacienteProcedimentos;
 
     uint256 private idCounter;
 
-
-    event PacienteRegistrado(uint256 indexed id, address indexed wallet);
-    event PacienteDesativado(uint256 indexed id, address indexed wallet);
+    event PacienteRegistrado(uint256 indexed id, address indexed walletId);
+    event PacienteDesativado(uint256 indexed id);
     event PacienteAtualizado(uint256 indexed id, address novoMedico);
     event WalletAssociada(uint256 indexed id, address wallet);
-    event ProcedimentoRegistrado(uint256 indexed idPaciente, uint256 idProcedimento);
-    event Reidentificacao(address diretor, address wallet, uint256 idPaciente);
+    event ProcedimentoRegistrado(uint256 indexed idPaciente, bytes32 procedimentoId);
     event NotificacaoMedico(uint256 indexed idPaciente, string motivo);
 
     modifier onlyDiretorMedico() {
-        require(hasRole(DIRETOR_ROLE, msg.sender), "Nao autorizado apenas o Diretor pode realizar essa operacao");
+        require(hasRole(DIRETOR_ROLE, msg.sender), "Nao autorizado, apenas o Diretor pode realizar essa operacao");
         _;
     }
 
     modifier onlyMedico() {
-        require(hasRole(MEDICO_ROLE, msg.sender), "Nao autorizado apenas o Medico pode realizar essa operacao");
+        require(hasRole(MEDICO_ROLE, msg.sender), "Nao autorizado, apenas o Medico pode realizar essa operacao");
         _;
     }
 
-    function createPaciente(string memory _nome, uint256 _dataNascimento) public onlyMedico {
+    function registrarPaciente(string memory _nome, uint256 _dataNascimento) public onlyMedico {
         idCounter++;
-        address generatedId = address(uint160(uint256(keccak256(abi.encodePacked(msg.sender, idCounter, block.timestamp)))));
+        address walletId = address(uint160(uint256(keccak256(abi.encodePacked(msg.sender, idCounter, block.timestamp)))));
 
-        pacientes[generatedId] = Paciente({
+        pacientes[idCounter] = Paciente({
             id: idCounter,
             idMedico: msg.sender,
             nome: _nome,
@@ -72,46 +65,64 @@ contract Pacientes is AccessControl, IPacientes {
             pacienteAtivo: true
         });
 
-        bytes32 pacienteKey = bytes32(uint256(uint160(generatedId)));
-        idToPaciente[pacienteKey] = generatedId;
-        pacienteWallets[idCounter].push(generatedId);
+        walletToPacienteId[walletId] = idCounter;
 
-        emit PacienteRegistrado(idCounter, generatedId);
-        emit WalletAssociada(idCounter, generatedId);
+        emit PacienteRegistrado(idCounter, walletId);
+        emit WalletAssociada(idCounter, walletId);
     }
 
-    function desativarPaciente(bytes32 _id) public onlyDiretorMedico {
-        address pacienteAddress = idToPaciente[_id];
-        require(pacienteAddress != address(0), "Nao existe paciente com ID informado");
-        pacientes[pacienteAddress].pacienteAtivo = false;
+    function desativarPaciente(uint256 _pacienteId) public onlyDiretorMedico {
+        require(_pacienteId > 0 && pacientes[_pacienteId].id != 0, "Paciente nao existe");
+        
+        pacientes[_pacienteId].pacienteAtivo = false;
 
-        emit PacienteDesativado(pacientes[pacienteAddress].id, pacienteAddress);
+        emit PacienteDesativado(_pacienteId);
     }
 
-    function atualizarPaciente(address _wallet, address _novoMedico) public onlyDiretorMedico {
-        require(pacientes[_wallet].id != 0, "Paciente nao existe");
-        pacientes[_wallet].idMedico = _novoMedico;
+    function atualizarPaciente(uint256 _pacienteId, address _novoMedico) public onlyDiretorMedico {
+        require(_pacienteId > 0 && pacientes[_pacienteId].id != 0, "Paciente nao existe");
+        pacientes[_pacienteId].idMedico = _novoMedico;
 
-        emit PacienteAtualizado(pacientes[_wallet].id, _novoMedico);
+        emit PacienteAtualizado(pacientes[_pacienteId].id, _novoMedico);
     }
 
-    function notificarMedico(uint256 pacienteId, string memory motivo) public onlyDiretorMedico {
-        emit NotificacaoMedico(pacienteId, motivo);
+    function notificarMedico(uint256 _pacienteId, string memory _motivo) public onlyDiretorMedico {
+        emit NotificacaoMedico(_pacienteId, _motivo);
     }
 
-
-    function existePaciente(address wallet) public view override returns (bool) {
-        return pacientes[wallet].id != 0;
+    function existePaciente(address _wallet) public view override returns (bool) {
+        return walletToPacienteId[_wallet] != 0;
     }
 
-    function getPaciente(address wallet) public view returns (Paciente memory) {
-        require(existePaciente(wallet), "Paciente nao existe");
-        return pacientes[wallet];
+    function getPaciente(address _wallet) public view onlyDiretorMedico returns (Paciente memory) {
+        uint256 pacienteId = walletToPacienteId[_wallet];
+        require(pacienteId != 0, "Paciente nao existe");
+        return pacientes[pacienteId];
     }
 
-    function registrarProcedimento(uint256 pacienteId, bytes32 procedimentoId) public onlyMedico {
-        pacienteProcedimentos[pacienteId].push(procedimentoId);
-        emit ProcedimentoRegistrado(pacienteId, uint256(procedimentoId));
+    function registrarProcedimento(uint256 _pacienteId, bytes32 _procedimentoId) public onlyMedico {
+        require(_pacienteId > 0 && pacientes[_pacienteId].id != 0, "Paciente nao existe");
+        pacienteProcedimentos[_pacienteId].push(_procedimentoId);
+        emit ProcedimentoRegistrado(_pacienteId, _procedimentoId);
     }
 
+    function adicionarWallet(uint256 _pacienteId) public onlyDiretorMedico returns (address novaWallet) {
+        require(_pacienteId > 0 && pacientes[_pacienteId].id != 0, "Paciente nao existe");
+
+        novaWallet = address(uint160(uint256(keccak256(abi.encodePacked(
+            block.timestamp,
+            _pacienteId,
+            walletToPacienteId[pacientes[_pacienteId].idMedico] // Usa o ID do médico para garantir unicidade
+        )))));
+
+        walletToPacienteId[novaWallet] = _pacienteId;
+
+        emit WalletAssociada(_pacienteId, novaWallet);
+    }
+
+    function removerWallet(address _wallet) public onlyDiretorMedico {
+        uint256 pacienteId = walletToPacienteId[_wallet];
+        require(pacienteId != 0, "Wallet nao associada a nenhum paciente");
+        delete walletToPacienteId[_wallet];
+    }
 }
