@@ -31,7 +31,7 @@ contract Pacientes is AccessControl, IPacientes {
     }
 
     mapping(uint256 => Paciente) public pacientes;
-    mapping(uint256 => address[]) private pacienteWallets; // Comentário: New mapping to store all wallets for a patient
+    mapping(uint256 => address[]) private pacienteWallets;
     mapping(address => uint256) private walletToPacienteId;
     mapping(uint256 => bytes32[]) private pacienteProcedimentos;
 
@@ -118,7 +118,7 @@ contract Pacientes is AccessControl, IPacientes {
         )))));
 
         walletToPacienteId[novaWallet] = _pacienteId;
-        pacienteWallets[_pacienteId].push(novaWallet); // Comentário: Now populating the new mapping.
+        pacienteWallets[_pacienteId].push(novaWallet);
 
         emit WalletAssociada(_pacienteId, novaWallet);
     }
@@ -127,7 +127,6 @@ contract Pacientes is AccessControl, IPacientes {
         uint256 pacienteId = walletToPacienteId[_wallet];
         require(pacienteId != 0, "Wallet nao associada a nenhum paciente");
         
-        // Comentário: Lógica para remover a wallet do array `pacienteWallets`
         address[] storage wallets = pacienteWallets[pacienteId];
         uint256 length = wallets.length;
         bool found = false;
@@ -141,7 +140,6 @@ contract Pacientes is AccessControl, IPacientes {
         }
         require(found, "Wallet nao associada a este paciente.");
 
-        // Comentário: Remove a associação da wallet para o ID
         delete walletToPacienteId[_wallet];
     }
 
