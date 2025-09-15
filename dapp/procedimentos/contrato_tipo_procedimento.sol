@@ -20,7 +20,7 @@ contract GerenciadorTipoProcedimento is IGerenciadorTiposProcedimento, IVerifica
         _;
     }
 
-    modifier tipoExiste(uint16 id) {
+    modifier typeExists(uint16 id) {
         require(tipos_procedimento[id].cadastrado, tipoProcedimentoNaoExiste(id));
         _;
     }
@@ -34,11 +34,11 @@ contract GerenciadorTipoProcedimento is IGerenciadorTiposProcedimento, IVerifica
         return tipos_procedimento[quantos_tipos-1];
     }
     
-    function getTipo(uint16 id) external tipoExiste(id) view returns(Entidades.TipoProcedimento memory) {
+    function getTipo(uint16 id) external typeExists(id) view returns(Entidades.TipoProcedimento memory) {
         return tipos_procedimento[id];
     }
     
-    function deleteTipo(uint16 id) tipoExiste(id) isAdmin external {
+    function deleteTipo(uint16 id) typeExists(id) isAdmin external {
         uint16 temp = id;
         Entidades.TipoProcedimento memory tipo = tipos_procedimento[id];
         while (tipos_procedimento[temp].cadastrado && temp + 1 != id) {

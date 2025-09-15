@@ -4,9 +4,10 @@ pragma solidity >=0.4.0 <0.9.0;
 import "dapp/procedimentos/libs.sol";
 
 contract GerenciadorProcedimento is IGerenciadorProcedimento {
-
-    uint private procedimento_next_id = 1;
     mapping(uint => Entidades.Procedimento) private procedimentos;
+    
+    // O índice 0 será utilizado como índice coringa, para ser usado como indice de procedimento anterior, ao não existir indice anterior!
+    uint private procedimento_next_id = 1;
 
     address private admin;
     address private verificadorPaciente;
@@ -69,7 +70,8 @@ contract GerenciadorProcedimento is IGerenciadorProcedimento {
         }
     }
 
-    function getProcedimento(uint id) external view returns (Entidades.Procedimento memory) {
+    function getProcedimento(uint id) external procedureExists(id) view returns (Entidades.Procedimento memory) {
+        require(id != 0, procedimentoNaoExiste(id));
         return procedimentos[id];
     }
 
