@@ -2,12 +2,9 @@
 pragma solidity ^0.8.24;
 
 import "@openzeppelin/contracts/access/AccessControl.sol";
+import "dapp/procedimentos/libs.sol";
 
-interface IPacientes {
-    function existePaciente(address wallet) external view returns (bool);
-}
-
-contract Pacientes is AccessControl, IPacientes {
+contract Pacientes is AccessControl, IVerificadorPaciente {
     bytes32 public constant DIRETOR_ROLE = keccak256("DIRETOR_ROLE");
     bytes32 public constant MEDICO_ROLE = keccak256("MEDICO_ROLE");
 
@@ -92,7 +89,7 @@ contract Pacientes is AccessControl, IPacientes {
         emit NotificacaoMedico(_pacienteId, _motivo);
     }
 
-    function existePaciente(address _wallet) public view override returns (bool) {
+    function verificarPaciente(address _wallet) public view override returns (bool) {
         return walletToPacienteId[_wallet] != 0;
     }
 
