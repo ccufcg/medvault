@@ -28,6 +28,7 @@ Este projeto foi desenvolvido como trabalho da final do disciplina DLT da Gradua
 - [Etapas do projeto e metodologia](docs/METODOLOGIA_DE_TRABALHO.md)
 - [Etapa 1: Desenho, Documentação e Planejamento](docs/README.md)
 - [Etapa 2: Implementação dos Contratos Inteligentes](dapp/README.md)
+- [Etapa 3: Implementação das Interfaces (API e/ou DApp)](frontend/README.md)
     <!-- - [Especificações do Módulo de Pacientes](#)
     - [Especificações do Módulo de Profissionais de Saúde](#)
     - [Especificações do Módulo de Controle de Estoque](#)
@@ -38,8 +39,8 @@ Este projeto foi desenvolvido como trabalho da final do disciplina DLT da Gradua
 
 | Módulo | Etapa 1 | Etapa 2 | Etapa 3 |
 | :--- | :--: | :--: | :--: |
-| **Gestão de Pacientes** | ✅ | 👷 | |
-| **Cadastro de Profissionais** | ❓ | 👷 |  |
-| **Controle de Estoque** | ❓ | 👷 | |
-| **Registro de Procedimentos** | ✅ | 👷 | |
-| **Acesso e Relatórios**| ❓ | 👷 |  |
+| **Gestão de Pacientes** | ✅ | ❓ | 👷 |
+| **Cadastro de Profissionais** | ✅ | ❓ | 👷 |
+| **Controle de Estoque** | ✅ | ❓ | 👷 |
+| **Registro de Procedimentos** | ✅ | ❓ | 👷 |
+| **Acesso e Relatórios**| ✅ | ❓ | 👷 |
