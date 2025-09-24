@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: GPL
 pragma solidity >=0.4.0 <0.9.0;
 
-import "dapp/estoque/libs.sol";
+import "./libs.sol";
 
 interface IVerificadorEstoque {
     function verificarEstoque(uint uuid) external view returns (bool);
@@ -74,5 +74,40 @@ contract Estoque is IVerificadorEstoque {
         require(item.idHash != 0, "Item inexistente");
         require(item.dataValidade > block.timestamp, "Item vencido");
         emit ItemUtilizado(item.idItemHospital, item.idHash);
+    }
+
+    // Lista todos os itens cadastrados
+    function listarItens() external view returns (Entidades.ItemEstoque[] memory) {
+        Entidades.ItemEstoque[] memory itens = new Entidades.ItemEstoque[](contadorIds);
+        uint j = 0;
+        for (uint i = 1; i <= contadorIds; i++) {
+            if (catalogoItens[i].idHash != 0) {
+                itens[j] = catalogoItens[i];
+                j++;
+            }
+        }
+        return itens;
+    }
+
+    // Lista apenas os itens de alto custo
+    function listarItensAltoCusto() external view returns (Entidades.ItemEstoque[] memory) {
+        // Primeiro conta quantos itens alto custo existem
+        uint count = 0;
+        for (uint i = 1; i <= contadorIds; i++) {
+            if (catalogoItens[i].altoCusto) {
+                count++;
+            }
+        }
+
+        // Cria array no tamanho exato
+        Entidades.ItemEstoque[] memory itensAltoCusto = new Entidades.ItemEstoque[](count);
+        uint j = 0;
+        for (uint i = 1; i <= contadorIds; i++) {
+            if (catalogoItens[i].altoCusto) {
+                itensAltoCusto[j] = catalogoItens[i];
+                j++;
+            }
+        }
+        return itensAltoCusto;
     }
 }
