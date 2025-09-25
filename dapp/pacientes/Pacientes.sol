@@ -51,6 +51,27 @@ contract Pacientes is AccessControl, IVerificadorPaciente {
         _;
     }
 
+    function registrarPacienteComWallet(address _wallet, string memory _nome, uint256 _dataNascimento) public onlyMedico {
+        require(_wallet != address(0), "Wallet invalida");
+        idCounter++;
+
+        pacientes[idCounter] = Paciente({
+        id: idCounter,
+        idMedico: msg.sender,
+        nome: _nome,
+        dataNascimento: _dataNascimento,
+        pacienteAtivo: true
+        });
+
+
+        walletToPacienteId[_wallet] = idCounter;
+        pacienteWallets[idCounter].push(_wallet);
+
+
+        emit PacienteRegistrado(idCounter, _wallet);
+        emit WalletAssociada(idCounter, _wallet);
+    }
+
     function registrarPaciente(string memory _nome, uint256 _dataNascimento) public onlyMedico {
         idCounter++;
         address walletId = address(uint160(uint256(keccak256(abi.encodePacked(msg.sender, idCounter, block.timestamp)))));

@@ -1,0 +1,12 @@
+{
+  "network": {
+    "rpcUrl": "http://127.0.0.1:8545",
+    "chainId": 1337
+  },
+  "contracts": {
+    "Pacientes": {
+      "address": "<ENDERECO_DO_CONTRATO>",
+      "abiFile": "config/Pacientes.idl"
+    }
+  }
+}

@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <title>Portal do Diretor Médico - Pacientes</title>
+  <link rel="stylesheet" href="pacientes.css">
+  <script src="https://cdn.jsdelivr.net/npm/web3/dist/web3.min.js"></script>
+  <script src="libs/qrcode.min.js"></script>
+  <script src="js/index.js" defer></script>
+</head>
+<body>
+  <header>
+    <h1>Portal do Diretor Médico</h1>
+    <p>Gerenciamento de Pacientes com Identidade Digital na Blockchain</p>
+  </header>
+
+  <main>
+    <section class="card">
+      <h2>Cadastro de Paciente</h2>
+      <div class="form-group">
+        <label for="cadNome">Nome:</label>
+        <input type="text" id="cadNome" placeholder="Digite o nome do paciente">
+        <span class="error-msg" id="errorNome"></span>
+      </div>
+      <div class="form-group">
+        <label for="cadCpf">CPF:</label>
+        <input type="text" id="cadCpf" placeholder="Digite o CPF do paciente">
+        <span class="error-msg" id="errorCpf"></span>
+      </div>
+      <button onclick="cadastrarPaciente()">Registrar</button>
+      <p id="cadOutput"></p>
+      <div id="qrcode"></div>
+    </section>
+
+    <section class="card">
+      <h2>Consulta por Wallet</h2>
+      <div class="form-group">
+        <label for="consultaWallet">Endereço da Wallet:</label>
+        <input type="text" id="consultaWallet" placeholder="Ex: 0x123...">
+      </div>
+      <button onclick="consultarPorWallet()">Consultar</button>
+      <pre id="consultaWalletOut"></pre>
+    </section>
+
+    <section class="card">
+      <h2>Consulta por CPF</h2>
+      <div class="form-group">
+        <label for="consultaCpf">CPF:</label>
+        <input type="text" id="consultaCpf" placeholder="Ex: 123.456.789-00">
+      </div>
+      <button onclick="consultarPorCpf()">Listar Wallets</button>
+      <pre id="consultaCpfOut"></pre>
+    </section>
+  </main>
+
+  <footer>
+    <p>&copy; 2025 - Portal do Diretor Médico</p>
+  </footer>
+</body>
+</html>
