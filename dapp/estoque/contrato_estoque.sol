@@ -14,6 +14,11 @@ contract Estoque is IVerificadorEstoque {
     uint private contadorIds;
     address public admin;
 
+    // Controle das categorias dinâmicas
+    string[] private categorias; // lista de categorias validas
+    mapping(string => bool) private categoriaValida; // mapping para verificação
+
+    event CategoriaAdicionada(string nomeCategoria);
     event ItemCatalogado(uint indexed idItemHospital, uint idHash);
     event ItemUtilizado(uint indexed idItemHospital, uint idHash);
 
@@ -25,16 +30,34 @@ contract Estoque is IVerificadorEstoque {
     constructor() {
         admin = msg.sender;
     }
+    // Funções Externas 
+    // Funções de categoria
+    function addCategoria(string memory nomeCategoria) external onlyAdmin {
+        require(bytes(nomeCategoria).length > 0, "Nome invalido");
+        require(!categoriaValida[nomeCategoria], "Categoria ja existente");
+        categorias.push(nomeCategoria);
+        categoriaValida[nomeCategoria] = true;
+        emit CategoriaAdicionada(nomeCategoria);
+    }
 
-    // Funções Admin - necessário modulo de controle de admin 
+    function listarCategorias() external view returns (string[] memory) {
+        return categorias;
+    }
+    function categoriaExiste(string memory nomeCategoria) public view returns (bool) {
+        return categoriaValida[nomeCategoria];
+    }
+    
+    // Funções add Item
     function addItem(
         uint idItemHospital,
         string memory lote,
-        Entidades.EnumCategoria categoria,
+        string memory categoria,
         uint dataValidade,
         bool altoCusto,
         string memory descricao
     ) external onlyAdmin returns (uint) {
+        require(categoriaValida[categoria], "Categoria nao existe");
+
         contadorIds++;
         catalogoItens[contadorIds] = Entidades.ItemEstoque({
             idHash: contadorIds,
@@ -55,7 +78,7 @@ contract Estoque is IVerificadorEstoque {
         return catalogoItens[uuid];
     }
 
-    // Funções Externas 
+    
     // Verifica se o item existe e não está vencido.
     function verificarEstoque(uint uuid) external view override returns (bool) {
         Entidades.ItemEstoque storage item = catalogoItens[uuid];
