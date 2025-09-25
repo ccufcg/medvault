@@ -77,8 +77,10 @@ async function cadastrarPaciente() {
 }
 
 async function verificarDiretor() {
+    console.log("ACCOUNST 0:")
+    console.log(accounts[0])
   const account = accounts[0] || "";
-  return account.toLowerCase() === "0xfe3b557e8fb62b89f4916b721be55ceb828dbd73";
+  return account.toLowerCase() === "0xf17f52151EbEF6C7334FAD080c5704D77216b732".toLocaleLowerCase();
 }
 
 async function consultarPorWallet() {
