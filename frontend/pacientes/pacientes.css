@@ -137,3 +137,11 @@ footer {
 .close:hover {
   color: #000;
 }
+
+.qrcode_container {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 15px;
+    padding: 10px;
+}
