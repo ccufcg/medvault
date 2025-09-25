@@ -66,7 +66,6 @@ async function cadastrarPaciente() {
       height: 150,
       colorDark: "#2c3e50",
       colorLight: "#ffffff",
-      correctLevel: QRCode.CorrectLevel.H,
     });
 
     nomeInput.value = "";
