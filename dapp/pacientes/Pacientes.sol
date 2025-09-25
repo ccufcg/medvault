@@ -1,21 +1,15 @@
 // SPDX-License-Identifier: MIT
-pragma solidity ^0.8.24;
+pragma solidity ^0.8.18;
 
-import "@openzeppelin/contracts/access/AccessControl.sol";
-import "dapp/procedimentos/libs.sol";
+import "./libs.sol";
 
-contract Pacientes is AccessControl, IVerificadorPaciente {
-    bytes32 public constant DIRETOR_ROLE = keccak256("DIRETOR_ROLE");
-    bytes32 public constant MEDICO_ROLE = keccak256("MEDICO_ROLE");
+contract PacientesNoAccessControl is IVerificadorPaciente {
 
-    constructor(address diretorMedico) {
-        _grantRole(DEFAULT_ADMIN_ROLE, msg.sender);
-        _grantRole(DIRETOR_ROLE, diretorMedico);
-        _grantRole(MEDICO_ROLE, msg.sender);// Para fins de teste de funcionamento dos métodos
-    }
+    address private owner;
+    address public diretorMedico;
+    mapping(address => bool) private medicos;
 
     struct Procedimento {
-        // Importar procedimentos depois
         string nome;
     }
 
@@ -31,7 +25,7 @@ contract Pacientes is AccessControl, IVerificadorPaciente {
     mapping(uint256 => address[]) private pacienteWallets;
     mapping(address => uint256) private walletToPacienteId;
     mapping(uint256 => bytes32[]) private pacienteProcedimentos;
-
+    
     uint256 private idCounter;
 
     event PacienteRegistrado(uint256 indexed id, address indexed walletId);
@@ -42,13 +36,32 @@ contract Pacientes is AccessControl, IVerificadorPaciente {
     event NotificacaoMedico(uint256 indexed idPaciente, string motivo);
 
     modifier onlyDiretorMedico() {
-        require(hasRole(DIRETOR_ROLE, msg.sender), "Nao autorizado, apenas o Diretor pode realizar essa operacao");
+        require(msg.sender == diretorMedico, "Nao autorizado, apenas o Diretor pode realizar essa operacao");
         _;
     }
 
     modifier onlyMedico() {
-        require(hasRole(MEDICO_ROLE, msg.sender), "Nao autorizado, apenas o Medico pode realizar essa operacao");
+        require(medicos[msg.sender] || msg.sender == diretorMedico, "Nao autorizado, apenas o Medico pode realizar essa operacao");
         _;
+    }
+    
+    modifier onlyOwner() {
+        require(msg.sender == owner, "Only the owner can call this function.");
+        _;
+    }
+
+    constructor(address _diretorMedico) {
+        owner = msg.sender;
+        diretorMedico = _diretorMedico;
+        medicos[msg.sender] = true; // For testing purposes
+    }
+
+    function addMedico(address _medico) public onlyOwner {
+        medicos[_medico] = true;
+    }
+
+    function removeMedico(address _medico) public onlyOwner {
+        medicos[_medico] = false;
     }
 
     function registrarPacienteComWallet(address _wallet, string memory _nome, uint256 _dataNascimento) public onlyMedico {
@@ -63,10 +76,8 @@ contract Pacientes is AccessControl, IVerificadorPaciente {
         pacienteAtivo: true
         });
 
-
         walletToPacienteId[_wallet] = idCounter;
         pacienteWallets[idCounter].push(_wallet);
-
 
         emit PacienteRegistrado(idCounter, _wallet);
         emit WalletAssociada(idCounter, _wallet);
@@ -85,7 +96,7 @@ contract Pacientes is AccessControl, IVerificadorPaciente {
         });
 
         walletToPacienteId[walletId] = idCounter;
-        pacienteWallets[idCounter].push(walletId); // Comentário: Now populating the new mapping.
+        pacienteWallets[idCounter].push(walletId);
 
         emit PacienteRegistrado(idCounter, walletId);
         emit WalletAssociada(idCounter, walletId);

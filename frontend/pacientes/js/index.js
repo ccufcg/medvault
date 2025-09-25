@@ -72,6 +72,7 @@ async function cadastrarPaciente() {
     nomeInput.value = "";
     cpfInput.value = "";
   } catch (err) {
+    console.log(err)
     alert("Erro ao registrar paciente: " + err.message);
   }
 }

@@ -1,0 +1,423 @@
+[
+	{
+		"inputs": [
+			{
+				"internalType": "address",
+				"name": "_diretorMedico",
+				"type": "address"
+			}
+		],
+		"stateMutability": "nonpayable",
+		"type": "constructor"
+	},
+	{
+		"anonymous": false,
+		"inputs": [
+			{
+				"indexed": true,
+				"internalType": "uint256",
+				"name": "idPaciente",
+				"type": "uint256"
+			},
+			{
+				"indexed": false,
+				"internalType": "string",
+				"name": "motivo",
+				"type": "string"
+			}
+		],
+		"name": "NotificacaoMedico",
+		"type": "event"
+	},
+	{
+		"anonymous": false,
+		"inputs": [
+			{
+				"indexed": true,
+				"internalType": "uint256",
+				"name": "id",
+				"type": "uint256"
+			},
+			{
+				"indexed": false,
+				"internalType": "address",
+				"name": "novoMedico",
+				"type": "address"
+			}
+		],
+		"name": "PacienteAtualizado",
+		"type": "event"
+	},
+	{
+		"anonymous": false,
+		"inputs": [
+			{
+				"indexed": true,
+				"internalType": "uint256",
+				"name": "id",
+				"type": "uint256"
+			}
+		],
+		"name": "PacienteDesativado",
+		"type": "event"
+	},
+	{
+		"anonymous": false,
+		"inputs": [
+			{
+				"indexed": true,
+				"internalType": "uint256",
+				"name": "id",
+				"type": "uint256"
+			},
+			{
+				"indexed": true,
+				"internalType": "address",
+				"name": "walletId",
+				"type": "address"
+			}
+		],
+		"name": "PacienteRegistrado",
+		"type": "event"
+	},
+	{
+		"anonymous": false,
+		"inputs": [
+			{
+				"indexed": true,
+				"internalType": "uint256",
+				"name": "idPaciente",
+				"type": "uint256"
+			},
+			{
+				"indexed": false,
+				"internalType": "bytes32",
+				"name": "procedimentoId",
+				"type": "bytes32"
+			}
+		],
+		"name": "ProcedimentoRegistrado",
+		"type": "event"
+	},
+	{
+		"anonymous": false,
+		"inputs": [
+			{
+				"indexed": true,
+				"internalType": "uint256",
+				"name": "id",
+				"type": "uint256"
+			},
+			{
+				"indexed": false,
+				"internalType": "address",
+				"name": "wallet",
+				"type": "address"
+			}
+		],
+		"name": "WalletAssociada",
+		"type": "event"
+	},
+	{
+		"inputs": [
+			{
+				"internalType": "address",
+				"name": "_medico",
+				"type": "address"
+			}
+		],
+		"name": "addMedico",
+		"outputs": [],
+		"stateMutability": "nonpayable",
+		"type": "function"
+	},
+	{
+		"inputs": [
+			{
+				"internalType": "uint256",
+				"name": "_pacienteId",
+				"type": "uint256"
+			}
+		],
+		"name": "adicionarWallet",
+		"outputs": [
+			{
+				"internalType": "address",
+				"name": "novaWallet",
+				"type": "address"
+			}
+		],
+		"stateMutability": "nonpayable",
+		"type": "function"
+	},
+	{
+		"inputs": [
+			{
+				"internalType": "uint256",
+				"name": "_pacienteId",
+				"type": "uint256"
+			},
+			{
+				"internalType": "address",
+				"name": "_novoMedico",
+				"type": "address"
+			}
+		],
+		"name": "atualizarPaciente",
+		"outputs": [],
+		"stateMutability": "nonpayable",
+		"type": "function"
+	},
+	{
+		"inputs": [
+			{
+				"internalType": "uint256",
+				"name": "_pacienteId",
+				"type": "uint256"
+			}
+		],
+		"name": "desativarPaciente",
+		"outputs": [],
+		"stateMutability": "nonpayable",
+		"type": "function"
+	},
+	{
+		"inputs": [],
+		"name": "diretorMedico",
+		"outputs": [
+			{
+				"internalType": "address",
+				"name": "",
+				"type": "address"
+			}
+		],
+		"stateMutability": "view",
+		"type": "function"
+	},
+	{
+		"inputs": [
+			{
+				"internalType": "address",
+				"name": "_wallet",
+				"type": "address"
+			}
+		],
+		"name": "getPaciente",
+		"outputs": [
+			{
+				"components": [
+					{
+						"internalType": "uint256",
+						"name": "id",
+						"type": "uint256"
+					},
+					{
+						"internalType": "address",
+						"name": "idMedico",
+						"type": "address"
+					},
+					{
+						"internalType": "string",
+						"name": "nome",
+						"type": "string"
+					},
+					{
+						"internalType": "uint256",
+						"name": "dataNascimento",
+						"type": "uint256"
+					},
+					{
+						"internalType": "bool",
+						"name": "pacienteAtivo",
+						"type": "bool"
+					}
+				],
+				"internalType": "struct PacientesNoAccessControl.Paciente",
+				"name": "",
+				"type": "tuple"
+			}
+		],
+		"stateMutability": "view",
+		"type": "function"
+	},
+	{
+		"inputs": [
+			{
+				"internalType": "uint256",
+				"name": "_pacienteId",
+				"type": "uint256"
+			}
+		],
+		"name": "listarWallets",
+		"outputs": [
+			{
+				"internalType": "address[]",
+				"name": "",
+				"type": "address[]"
+			}
+		],
+		"stateMutability": "view",
+		"type": "function"
+	},
+	{
+		"inputs": [
+			{
+				"internalType": "uint256",
+				"name": "_pacienteId",
+				"type": "uint256"
+			},
+			{
+				"internalType": "string",
+				"name": "_motivo",
+				"type": "string"
+			}
+		],
+		"name": "notificarMedico",
+		"outputs": [],
+		"stateMutability": "nonpayable",
+		"type": "function"
+	},
+	{
+		"inputs": [
+			{
+				"internalType": "uint256",
+				"name": "",
+				"type": "uint256"
+			}
+		],
+		"name": "pacientes",
+		"outputs": [
+			{
+				"internalType": "uint256",
+				"name": "id",
+				"type": "uint256"
+			},
+			{
+				"internalType": "address",
+				"name": "idMedico",
+				"type": "address"
+			},
+			{
+				"internalType": "string",
+				"name": "nome",
+				"type": "string"
+			},
+			{
+				"internalType": "uint256",
+				"name": "dataNascimento",
+				"type": "uint256"
+			},
+			{
+				"internalType": "bool",
+				"name": "pacienteAtivo",
+				"type": "bool"
+			}
+		],
+		"stateMutability": "view",
+		"type": "function"
+	},
+	{
+		"inputs": [
+			{
+				"internalType": "string",
+				"name": "_nome",
+				"type": "string"
+			},
+			{
+				"internalType": "uint256",
+				"name": "_dataNascimento",
+				"type": "uint256"
+			}
+		],
+		"name": "registrarPaciente",
+		"outputs": [],
+		"stateMutability": "nonpayable",
+		"type": "function"
+	},
+	{
+		"inputs": [
+			{
+				"internalType": "address",
+				"name": "_wallet",
+				"type": "address"
+			},
+			{
+				"internalType": "string",
+				"name": "_nome",
+				"type": "string"
+			},
+			{
+				"internalType": "uint256",
+				"name": "_dataNascimento",
+				"type": "uint256"
+			}
+		],
+		"name": "registrarPacienteComWallet",
+		"outputs": [],
+		"stateMutability": "nonpayable",
+		"type": "function"
+	},
+	{
+		"inputs": [
+			{
+				"internalType": "uint256",
+				"name": "_pacienteId",
+				"type": "uint256"
+			},
+			{
+				"internalType": "bytes32",
+				"name": "_procedimentoId",
+				"type": "bytes32"
+			}
+		],
+		"name": "registrarProcedimento",
+		"outputs": [],
+		"stateMutability": "nonpayable",
+		"type": "function"
+	},
+	{
+		"inputs": [
+			{
+				"internalType": "address",
+				"name": "_medico",
+				"type": "address"
+			}
+		],
+		"name": "removeMedico",
+		"outputs": [],
+		"stateMutability": "nonpayable",
+		"type": "function"
+	},
+	{
+		"inputs": [
+			{
+				"internalType": "address",
+				"name": "_wallet",
+				"type": "address"
+			}
+		],
+		"name": "removerWallet",
+		"outputs": [],
+		"stateMutability": "nonpayable",
+		"type": "function"
+	},
+	{
+		"inputs": [
+			{
+				"internalType": "address",
+				"name": "_wallet",
+				"type": "address"
+			}
+		],
+		"name": "verificarPaciente",
+		"outputs": [
+			{
+				"internalType": "bool",
+				"name": "",
+				"type": "bool"
+			}
+		],
+		"stateMutability": "view",
+		"type": "function"
+	}
+]
