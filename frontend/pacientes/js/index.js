@@ -71,13 +71,27 @@ async function cadastrarPaciente() {
     nomeInput.value = "";
     cpfInput.value = "";
   } catch (err) {
-    console.log(err)
+    console.log(err);
     alert("Erro ao registrar paciente: " + err.message);
   }
 }
 
+async function verificarDiretor() {
+  const account = accounts[0] || "";
+  return account.toLowerCase() === "0xfe3b557e8fb62b89f4916b721be55ceb828dbd73";
+}
+
 async function consultarPorWallet() {
   const wallet = document.getElementById("consultaWallet").value.trim();
+
+  const isDiretor = await verificarDiretor();
+  if (!isDiretor) {
+    mostrarAlerta(
+      "Acesso negado: somente o Diretor Médico pode consultar pacientes."
+    );
+    return;
+  }
+
   let resultado = null;
 
   for (const cpf in pacientesOffchain) {
@@ -96,12 +110,30 @@ async function consultarPorWallet() {
 
 async function consultarPorCpf() {
   const cpf = document.getElementById("consultaCpf").value.trim();
+
+  const isDiretor = await verificarDiretor();
+  if (!isDiretor) {
+    mostrarAlerta(
+      "Acesso negado: somente o Diretor Médico pode listar wallets."
+    );
+    return;
+  }
+
   const resultado = pacientesOffchain[cpf] || [];
 
   document.getElementById("consultaCpfOut").textContent =
     resultado.length > 0
       ? JSON.stringify(resultado, null, 2)
       : "Nenhuma wallet registrada";
+}
+
+function mostrarAlerta(mensagem) {
+  document.getElementById("alertText").textContent = mensagem;
+  document.getElementById("alertModal").style.display = "block";
+}
+
+function fecharModal() {
+  document.getElementById("alertModal").style.display = "none";
 }
 
 window.cadastrarPaciente = cadastrarPaciente;
