@@ -84,6 +84,21 @@ contract ProfissionalManager is IGerenciadorProfissionais, IVerificadorProfissio
         return p;
     }
 
+    function getAllProfissionais()
+        external
+        view
+        returns (EntidadesProfissionais.Profissional[] memory) 
+    {
+        uint256 n = _profissionaisIndex.length;
+        Profissional[] memory arr = new Profissional[](n);
+        
+        for (uint256 i = 0; i < n; i++) {
+            arr[i] = _profissionais[_profissionaisIndex[i]];
+        }
+
+        return arr;
+    }
+
     function verificarProfissional(address profissional_id)
         external
         view
