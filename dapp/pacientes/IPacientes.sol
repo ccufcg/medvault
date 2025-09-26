@@ -29,6 +29,7 @@ interface IPacientesFull {
     function renounceRole(bytes32 role, address account) external;
 
     function registrarPaciente(string memory _nome, uint256 _dataNascimento) external;
+    function registrarPacienteComWallet(address _wallet, string memory _nome, uint256 _dataNascimento) external;
     function desativarPaciente(uint256 _pacienteId) external;
     function atualizarPaciente(uint256 _pacienteId, address _novoMedico) external;
     function notificarMedico(uint256 _pacienteId, string memory _motivo) external;

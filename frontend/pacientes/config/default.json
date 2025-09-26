@@ -1,0 +1,12 @@
+{
+  "network": {
+    "rpcUrl": "http://127.0.0.1:8545",
+    "chainId": 1337
+  },
+  "contracts": {
+    "Pacientes": {
+      "address": "0xb9A219631Aed55eBC3D998f17C3840B7eC39C0cc",
+      "abiFile": "config/Pacientes.idl"
+    }
+  }
+}

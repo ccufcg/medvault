@@ -32,12 +32,31 @@ interface IGerenciadorTiposProcedimento {
     function cadastraTipo(string memory tipo, uint16 categoria_profissional_id) external returns (Entidades.TipoProcedimento memory);
     function getTipo(uint16 id) external view returns(Entidades.TipoProcedimento memory);
     function deleteTipo(uint16 id) external;
+
+    event TipoCadastrado(uint16 id, string tipo, uint16 categoria_profissional_id);
+    event TipoDeletado(uint16 id, string tipo, uint16 categoria_profissional_id);
+
+    error categoriaSaudeNaoExiste(uint16 categoria_profissional_id);
+    error tipoProcedimentoLimiteAtingido();
 }
 
 interface IGerenciadorProcedimento {
     function cadastrarProcedimento(address id_paciente, uint id_procedimento_anterior, uint16 tipo_procedimento_id, bool intercorrencia) external returns (Entidades.Procedimento memory);
     function getProcedimento(uint id) external view returns (Entidades.Procedimento memory);
     function adicionaMaterial(uint id_procedimento, uint estoque_id, uint8 quantidade) external;
+
+    event ProcedimentoCadastrado(uint indexed id, address indexed id_paciente, address indexed id_profissional);
+    event NotificacaoIntercorrencia(uint indexed id, address indexed id_profissional);
+    event MaterialCadastrado(uint indexed estoque_id, uint8 quantidade, uint indexed id, address indexed id_profissional);
+    event ItemAltoCustoUtilizado(uint indexed estoque_id, uint8 quantidade, uint indexed id, address indexed id_profissional);
+
+    error isNotCapableRegisterProcedure(address sender);
+    error procedimentoLimiteAtingido();
+    error tipoProcedimentoNaoExiste(uint16 tipo_procedimento_id);
+    error pacienteNaoExiste(address id_paciente);
+    error profisionalNaoExiste(address id_profissional);
+    error procedimentoNaoExiste(uint id_procedimento);
+    error estoqueNaoExiste(uint estoque_id);
 }
 
 interface IVerificadorCategoriaSaude {
@@ -57,28 +76,12 @@ interface IVerificadorEstoque {
     function verificarItemAltoCusto(uint estoque_id) external view returns (bool);
 }
 
+interface IProcedimentoStorage {
+    function insertProcedimento(uint procedimento_id, address wallet) external;
+}
+
 interface IVerificadorTipoProcedimento {
     function verificarTipoProcedimento(uint16 procedimento_id) external view returns (bool);
 }
 
-event TipoCadastrado(uint16 id, string tipo, uint16 categoria_profissional_id);
-event TipoDeletado(uint16 id, string tipo, uint16 categoria_profissional_id);
-
-event ProcedimentoCadastrado(uint indexed id, address indexed id_paciente, address indexed id_profissional);
-event NotificacaoIntercorrencia(uint indexed id, address indexed id_profissional);
-event MaterialCadastrado(uint indexed estoque_id, uint8 quantidade, uint indexed id, address indexed id_profissional);
-event ItemAltoCustoUtilizado(uint indexed estoque_id, uint8 quantidade, uint indexed id, address indexed id_profissional);
-
 error isNotAdmin(address admin, address sender);
-error isNotCapableRegisterProcedure(address sender);
-
-error tipoProcedimentoLimiteAtingido();
-error procedimentoLimiteAtingido();
-
-
-error categoriaSaudeNaoExiste(uint16 categoria_profissional_id);
-error tipoProcedimentoNaoExiste(uint16 tipo_procedimento_id);
-error pacienteNaoExiste(address id_paciente);
-error profisionalNaoExiste(address id_profissional);
-error procedimentoNaoExiste(uint id_procedimento);
-error estoqueNaoExiste(uint estoque_id);
