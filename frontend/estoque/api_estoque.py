@@ -11,8 +11,8 @@ with open("estoque/config/contrato_estoque.idl") as f:
 with open("estoque/config/contrato_procedimento.idl") as f:
     abi_proc = json.load(f)
 
-ADDR_ESTOQUE = os.getenv("0x8CdaF0CD259887258Bc13a92C0a6dA92698644C0")
-ADDR_PROCED = os.getenv("0x345cA3e014Aaf5dcA488057592ee47305D9B3e10")
+ADDR_ESTOQUE = "0x8CdaF0CD259887258Bc13a92C0a6dA92698644C0"
+ADDR_PROCED = "0x345cA3e014Aaf5dcA488057592ee47305D9B3e10"
 estoque = w3.eth.contract(address=ADDR_ESTOQUE, abi=abi_estoque)
 proced = w3.eth.contract(address=ADDR_PROCED, abi=abi_proc)
 
@@ -26,10 +26,52 @@ def send_tx(contract_fn, private_key):
         "gasPrice": w3.eth.gas_price
     })
     signed = account.sign_transaction(tx)
-    tx_hash = w3.eth.send_raw_transaction(signed.rawTransaction)
+    tx_hash = w3.eth.send_raw_transaction(signed.raw_transaction)
     return w3.eth.wait_for_transaction_receipt(tx_hash)
 
-@api_estoque.route("/api/itens", methods=["POST"])
+@api_estoque.route("/api/categoria/add",methods=["POST"])
+def add_categoria():
+    """
+    POST /itens/categorias
+    Body JSON: { "nomeCategoria": "Antibiotico", "private_key": "0x..." }
+    """
+    data = request.get_json(force=True)
+    nome = data.get("nomeCategoria")
+
+    private_key = data.get("private_key")
+    print(private_key)
+    if not nome:
+        return jsonify({"error": "nomeCategoria é obrigatório"}), 400
+    if not private_key:
+        return jsonify({"error": "private_key é obrigatória"}), 400
+
+    try:
+        # Usa a função auxiliar para enviar a transação
+        receipt = send_tx(estoque.functions.addCategoria(nome), private_key)
+        return jsonify({
+            "status": "ok",
+            "txHash": receipt.transactionHash.hex(),
+            "blockNumber": receipt.blockNumber,
+        }), 201
+    except Exception as e:
+        return jsonify({"error": str(e)}), 500
+
+@api_estoque.route("/api/categoria/getall", methods=["GET"])
+def listar_categorias():
+    """
+    GET /api/categoria/getall
+    Retorna todas as categorias cadastradas no contrato.
+    """
+    try:
+        categorias = estoque.functions.listarCategorias().call()
+        return jsonify({
+            "categorias": categorias,
+            "total": len(categorias)
+        }), 200
+    except Exception as e:
+        return jsonify({"error": str(e)}), 500
+
+@api_estoque.route("/api/itens/add", methods=["POST"])
 def add_item():
     """
     POST /api/itens
@@ -81,7 +123,7 @@ def home():
 
 @api_estoque.route("/api/procedimentos/alto-custo", methods=["GET"])
 def listar_proc_alto_custo():
-
+    print("Inicio")
     itens_alto = estoque.functions.listarItensAltoCusto().call()
     print(itens_alto)
     ids_alto = {item[0] for item in itens_alto}  # assume idHash no índice 0
