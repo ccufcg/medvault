@@ -1,18 +1,18 @@
-from flask import Flask, request, jsonify
+from flask import Flask, request, jsonify, Blueprint
 from web3 import Web3
 import json, os
 
-api_estoque = Flask(__name__)
+api_estoque = Blueprint("api_estoque",__name__)
 w3 = Web3(Web3.HTTPProvider(os.getenv("RPC_URL","http://127.0.0.1:8545")))
 
-# Carregar ABI
-with open("contracts/Estoque.json") as f:
-    abi_estoque = json.load(f)["abi"]
-with open("contracts/Procedimentos.json") as f:
-    abi_proc = json.load(f)["abi"]
+# Carregar ABI frontend\estoque\config
+with open("estoque/config/contrato_estoque.idl") as f:
+    abi_estoque = json.load(f)
+with open("estoque/config/contrato_procedimento.idl") as f:
+    abi_proc = json.load(f)
 
-ADDR_ESTOQUE = os.getenv("ADDRESS_ESTOQUE")
-ADDR_PROCED = os.getenv("ADDRESS_PROCED")
+ADDR_ESTOQUE = "0x8CdaF0CD259887258Bc13a92C0a6dA92698644C0"
+ADDR_PROCED = "0x345cA3e014Aaf5dcA488057592ee47305D9B3e10"
 estoque = w3.eth.contract(address=ADDR_ESTOQUE, abi=abi_estoque)
 proced = w3.eth.contract(address=ADDR_PROCED, abi=abi_proc)
 
@@ -26,10 +26,52 @@ def send_tx(contract_fn, private_key):
         "gasPrice": w3.eth.gas_price
     })
     signed = account.sign_transaction(tx)
-    tx_hash = w3.eth.send_raw_transaction(signed.rawTransaction)
+    tx_hash = w3.eth.send_raw_transaction(signed.raw_transaction)
     return w3.eth.wait_for_transaction_receipt(tx_hash)
 
-@api_estoque.route("/api/itens", methods=["POST"])
+@api_estoque.route("/api/categoria/add",methods=["POST"])
+def add_categoria():
+    """
+    POST /itens/categorias
+    Body JSON: { "nomeCategoria": "Antibiotico", "private_key": "0x..." }
+    """
+    data = request.get_json(force=True)
+    nome = data.get("nomeCategoria")
+
+    private_key = data.get("private_key")
+    print(private_key)
+    if not nome:
+        return jsonify({"error": "nomeCategoria é obrigatório"}), 400
+    if not private_key:
+        return jsonify({"error": "private_key é obrigatória"}), 400
+
+    try:
+        # Usa a função auxiliar para enviar a transação
+        receipt = send_tx(estoque.functions.addCategoria(nome), private_key)
+        return jsonify({
+            "status": "ok",
+            "txHash": receipt.transactionHash.hex(),
+            "blockNumber": receipt.blockNumber,
+        }), 201
+    except Exception as e:
+        return jsonify({"error": str(e)}), 500
+
+@api_estoque.route("/api/categoria/getall", methods=["GET"])
+def listar_categorias():
+    """
+    GET /api/categoria/getall
+    Retorna todas as categorias cadastradas no contrato.
+    """
+    try:
+        categorias = estoque.functions.listarCategorias().call()
+        return jsonify({
+            "categorias": categorias,
+            "total": len(categorias)
+        }), 200
+    except Exception as e:
+        return jsonify({"error": str(e)}), 500
+
+@api_estoque.route("/api/itens/add", methods=["POST"])
 def add_item():
     """
     POST /api/itens
@@ -50,7 +92,7 @@ def add_item():
     if not auth or not auth.lower().startswith("bearer "):
         return {"error": "Authorization header ausente ou inválido"}, 401
     private_key = auth.split()[1].strip()
-
+    print(private_key)
     data = request.get_json(force=True)
     campos = ["idItemHospital", "lote", "categoria",
               "dataValidade", "altoCusto", "descricao"]
@@ -75,18 +117,33 @@ def add_item():
         }
     except Exception as e:
         return {"error": str(e)}, 500
-
+@api_estoque.route("/", methods=["GET"])
+def home():
+    return jsonify({"msg": "ok"})
 
 @api_estoque.route("/api/procedimentos/alto-custo", methods=["GET"])
 def listar_proc_alto_custo():
-    """Consulta procedimentos que utilizaram itens de alto custo (somente leitura)."""
-    procs = proced.functions.listarProcedimentos().call()
+    print("Inicio")
     itens_alto = estoque.functions.listarItensAltoCusto().call()
+    print(itens_alto)
     ids_alto = {item[0] for item in itens_alto}  # assume idHash no índice 0
 
     result = []
-    for p in procs:
-        proc_id, desc, itens_usados = p[0], p[1], p[2]
+    proc_id = 1
+
+    while True:
+        try:
+            # getProcedimento retorna (id, descricao, idsItens[])
+            p = proced.functions.getProcedimento(proc_id).call()
+        except Exception as e:
+            # Qualquer outro erro encerra o loop de forma segura
+            print(f"Erro ao buscar procedimento {proc_id}: {e}")
+            break
+        
+        print(p)
+        # p = (id, descricao, [idsItens])
+        desc = p[1]
+        itens_usados = p[2]
         usados_alto = [i for i in itens_usados if i in ids_alto]
         if usados_alto:
             result.append({
@@ -94,6 +151,8 @@ def listar_proc_alto_custo():
                 "descricao": desc,
                 "itensAltoCustoUsados": usados_alto
             })
+
+        proc_id += 1
     return jsonify(result)
 
 

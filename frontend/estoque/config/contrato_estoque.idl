@@ -1,0 +1,367 @@
+[
+	{
+		"inputs": [
+			{
+				"internalType": "string",
+				"name": "nomeCategoria",
+				"type": "string"
+			}
+		],
+		"name": "addCategoria",
+		"outputs": [],
+		"stateMutability": "nonpayable",
+		"type": "function"
+	},
+	{
+		"inputs": [
+			{
+				"internalType": "uint256",
+				"name": "idItemHospital",
+				"type": "uint256"
+			},
+			{
+				"internalType": "string",
+				"name": "lote",
+				"type": "string"
+			},
+			{
+				"internalType": "string",
+				"name": "categoria",
+				"type": "string"
+			},
+			{
+				"internalType": "uint256",
+				"name": "dataValidade",
+				"type": "uint256"
+			},
+			{
+				"internalType": "bool",
+				"name": "altoCusto",
+				"type": "bool"
+			},
+			{
+				"internalType": "string",
+				"name": "descricao",
+				"type": "string"
+			}
+		],
+		"name": "addItem",
+		"outputs": [
+			{
+				"internalType": "uint256",
+				"name": "",
+				"type": "uint256"
+			}
+		],
+		"stateMutability": "nonpayable",
+		"type": "function"
+	},
+	{
+		"inputs": [],
+		"stateMutability": "nonpayable",
+		"type": "constructor"
+	},
+	{
+		"anonymous": false,
+		"inputs": [
+			{
+				"indexed": false,
+				"internalType": "string",
+				"name": "nomeCategoria",
+				"type": "string"
+			}
+		],
+		"name": "CategoriaAdicionada",
+		"type": "event"
+	},
+	{
+		"anonymous": false,
+		"inputs": [
+			{
+				"indexed": true,
+				"internalType": "uint256",
+				"name": "idItemHospital",
+				"type": "uint256"
+			},
+			{
+				"indexed": false,
+				"internalType": "uint256",
+				"name": "idHash",
+				"type": "uint256"
+			}
+		],
+		"name": "ItemCatalogado",
+		"type": "event"
+	},
+	{
+		"anonymous": false,
+		"inputs": [
+			{
+				"indexed": true,
+				"internalType": "uint256",
+				"name": "idItemHospital",
+				"type": "uint256"
+			},
+			{
+				"indexed": false,
+				"internalType": "uint256",
+				"name": "idHash",
+				"type": "uint256"
+			}
+		],
+		"name": "ItemUtilizado",
+		"type": "event"
+	},
+	{
+		"inputs": [
+			{
+				"internalType": "uint256",
+				"name": "uuid",
+				"type": "uint256"
+			}
+		],
+		"name": "registrarUso",
+		"outputs": [],
+		"stateMutability": "nonpayable",
+		"type": "function"
+	},
+	{
+		"inputs": [],
+		"name": "admin",
+		"outputs": [
+			{
+				"internalType": "address",
+				"name": "",
+				"type": "address"
+			}
+		],
+		"stateMutability": "view",
+		"type": "function"
+	},
+	{
+		"inputs": [
+			{
+				"internalType": "string",
+				"name": "nomeCategoria",
+				"type": "string"
+			}
+		],
+		"name": "categoriaExiste",
+		"outputs": [
+			{
+				"internalType": "bool",
+				"name": "",
+				"type": "bool"
+			}
+		],
+		"stateMutability": "view",
+		"type": "function"
+	},
+	{
+		"inputs": [
+			{
+				"internalType": "uint256",
+				"name": "uuid",
+				"type": "uint256"
+			}
+		],
+		"name": "getItem",
+		"outputs": [
+			{
+				"components": [
+					{
+						"internalType": "uint256",
+						"name": "idHash",
+						"type": "uint256"
+					},
+					{
+						"internalType": "uint256",
+						"name": "idItemHospital",
+						"type": "uint256"
+					},
+					{
+						"internalType": "uint256",
+						"name": "dataValidade",
+						"type": "uint256"
+					},
+					{
+						"internalType": "string",
+						"name": "categoria",
+						"type": "string"
+					},
+					{
+						"internalType": "string",
+						"name": "descricao",
+						"type": "string"
+					},
+					{
+						"internalType": "bool",
+						"name": "altoCusto",
+						"type": "bool"
+					},
+					{
+						"internalType": "string",
+						"name": "lote",
+						"type": "string"
+					}
+				],
+				"internalType": "struct Entidades.ItemEstoque",
+				"name": "",
+				"type": "tuple"
+			}
+		],
+		"stateMutability": "view",
+		"type": "function"
+	},
+	{
+		"inputs": [],
+		"name": "listarCategorias",
+		"outputs": [
+			{
+				"internalType": "string[]",
+				"name": "",
+				"type": "string[]"
+			}
+		],
+		"stateMutability": "view",
+		"type": "function"
+	},
+	{
+		"inputs": [],
+		"name": "listarItens",
+		"outputs": [
+			{
+				"components": [
+					{
+						"internalType": "uint256",
+						"name": "idHash",
+						"type": "uint256"
+					},
+					{
+						"internalType": "uint256",
+						"name": "idItemHospital",
+						"type": "uint256"
+					},
+					{
+						"internalType": "uint256",
+						"name": "dataValidade",
+						"type": "uint256"
+					},
+					{
+						"internalType": "string",
+						"name": "categoria",
+						"type": "string"
+					},
+					{
+						"internalType": "string",
+						"name": "descricao",
+						"type": "string"
+					},
+					{
+						"internalType": "bool",
+						"name": "altoCusto",
+						"type": "bool"
+					},
+					{
+						"internalType": "string",
+						"name": "lote",
+						"type": "string"
+					}
+				],
+				"internalType": "struct Entidades.ItemEstoque[]",
+				"name": "",
+				"type": "tuple[]"
+			}
+		],
+		"stateMutability": "view",
+		"type": "function"
+	},
+	{
+		"inputs": [],
+		"name": "listarItensAltoCusto",
+		"outputs": [
+			{
+				"components": [
+					{
+						"internalType": "uint256",
+						"name": "idHash",
+						"type": "uint256"
+					},
+					{
+						"internalType": "uint256",
+						"name": "idItemHospital",
+						"type": "uint256"
+					},
+					{
+						"internalType": "uint256",
+						"name": "dataValidade",
+						"type": "uint256"
+					},
+					{
+						"internalType": "string",
+						"name": "categoria",
+						"type": "string"
+					},
+					{
+						"internalType": "string",
+						"name": "descricao",
+						"type": "string"
+					},
+					{
+						"internalType": "bool",
+						"name": "altoCusto",
+						"type": "bool"
+					},
+					{
+						"internalType": "string",
+						"name": "lote",
+						"type": "string"
+					}
+				],
+				"internalType": "struct Entidades.ItemEstoque[]",
+				"name": "",
+				"type": "tuple[]"
+			}
+		],
+		"stateMutability": "view",
+		"type": "function"
+	},
+	{
+		"inputs": [
+			{
+				"internalType": "uint256",
+				"name": "uuid",
+				"type": "uint256"
+			}
+		],
+		"name": "verificarEstoque",
+		"outputs": [
+			{
+				"internalType": "bool",
+				"name": "",
+				"type": "bool"
+			}
+		],
+		"stateMutability": "view",
+		"type": "function"
+	},
+	{
+		"inputs": [
+			{
+				"internalType": "uint256",
+				"name": "uuid",
+				"type": "uint256"
+			}
+		],
+		"name": "verificarItemAltoCusto",
+		"outputs": [
+			{
+				"internalType": "bool",
+				"name": "",
+				"type": "bool"
+			}
+		],
+		"stateMutability": "view",
+		"type": "function"
+	}
+]
