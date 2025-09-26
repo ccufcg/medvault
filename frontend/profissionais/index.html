@@ -1,0 +1,226 @@
+<!doctype html>
+<html lang="pt-BR" class="theme-light">
+
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Sistema de Gestão de Profissionais</title>
+  <link rel="stylesheet" href="styles.css" />
+</head>
+
+<body>
+  <!-- Tela de carregamento (exemplo; esconda/exiba conforme necessário) -->
+  <div class="loading hidden" id="app-loading">
+    <div class="loading__spinner"></div>
+    <p>Carregando sistema...</p>
+  </div>
+
+  <div class="page">
+    <header class="page__header container">
+      <h1 class="h1">Sistema de Gestão de Profissionais</h1>
+      <p class="muted">Cadastro e consulta de profissionais de saúde e seus procedimentos</p>
+    </header>
+
+    <main class="container">
+      <!-- Grid principal -->
+      <section class="grid grid--2 gap-6">
+        <!-- Card: Cadastro de Profissional -->
+        <article class="card">
+          <div class="card__header">
+            <h2 class="card__title">Cadastro de Profissional</h2>
+            <p class="card__description">Preencha os dados do profissional de saúde</p>
+          </div>
+          <div class="card__content">
+            <!-- Alert de erros (exemplo, esconda/exiba conforme necessário) -->
+            <div class="alert alert--destructive hidden" id="form-errors">
+              <ul class="alert__list">
+                <li>Nome é obrigatório.</li>
+                <li>Wallet inválida.</li>
+              </ul>
+            </div>
+
+            <form class="stack-4">
+              <div class="field">
+                <label for="nome" class="label">Nome Completo</label>
+                <input id="nome" type="text" class="input" placeholder="Digite o nome completo" required />
+              </div>
+
+              <div class="field">
+                <label for="idLegado" class="label">ID do Hospital</label>
+                <input id="idLegado" type="number" class="input" placeholder="Digite o ID do hospital" required />
+              </div>
+
+              <div class="field">
+                <label for="categoria" class="label">Categoria</label>
+                <select id="categoria" class="select" required>
+                  <option value="" selected disabled>Selecione a categoria</option>
+                  <option value="Medico">Médico</option>
+                  <option value="Enfermeiro">Enfermeiro</option>
+                </select>
+              </div>
+
+              <div class="field">
+                <label for="registro" class="label">Registro Profissional</label>
+                <input id="registro" type="text" class="input" placeholder="Ex: CRM-12345 ou COREN-67890" required />
+              </div>
+
+              <div class="field">
+                <label for="wallet" class="label">Endereço da Carteira</label>
+                <input id="wallet" type="text" class="input" placeholder="0x..." required />
+              </div>
+
+              <button id="submit-btn" class="button button--primary w-full">Cadastrar Profissional</button>
+            </form>
+          </div>
+        </article>
+
+        <!-- Card: Listagem de Profissionais -->
+        <article class="card">
+          <div class="card__header">
+            <h2 class="card__title">Profissionais Cadastrados</h2>
+            <p class="card__description">
+              3 profissionais cadastrados
+            </p>
+          </div>
+          <div class="card__content">
+            <div class="scroll-area">
+            </div>
+          </div>
+        </article>
+      </section>
+
+      <!-- Card: Visualização de Procedimentos (mostrando para profissional selecionado) -->
+      <section class="card mt-6">
+        <div class="card__header">
+          <h2 class="card__title">Procedimentos Realizados</h2>
+          <p class="card__description">
+            Profissional: Dra. Mariana Alves • 2 procedimentos
+          </p>
+        </div>
+        <div class="card__content">
+          <div class="scroll-area">
+            <!-- Procedimento -->
+            <article class="card card--accent-left">
+              <div class="card__content p-4">
+                <div class="stack-3">
+                  <!-- Header procedimento -->
+                  <div class="row between start">
+                    <div>
+                      <h3 class="text-sm strong">Consulta Ambulatorial</h3>
+                      <p class="text-xxs muted">ID: 1001</p>
+                    </div>
+                    <div class="row gap-2">
+                      <span class="badge badge--default text-xxs">Cadastrado</span>
+                    </div>
+                  </div>
+
+                  <hr class="separator" />
+
+                  <!-- Infos -->
+                  <div class="grid grid--2 gap-3 text-xxs">
+                    <div class="stack-2">
+                      <div>
+                        <span class="muted">Paciente:</span>
+                        <p class="mono break">0x8f12...A7b3</p>
+                      </div>
+                      <div>
+                        <span class="muted">Profissional:</span>
+                        <p class="mono break">0x91C3...7aF4</p>
+                      </div>
+                    </div>
+
+                    <div class="stack-2">
+                      <div>
+                        <span class="muted">Procedimento Anterior:</span>
+                        <p class="mono">Nenhum</p>
+                      </div>
+                      <div>
+                        <span class="muted">Tipo ID:</span>
+                        <p class="mono">1</p>
+                      </div>
+                    </div>
+                  </div>
+
+                  <!-- Materiais -->
+                  <hr class="separator" />
+                  <div>
+                    <h4 class="text-xxs muted mb-2">Materiais Utilizados:</h4>
+                    <div class="grid grid--auto-fit gap-2">
+                      <div class="chip">
+                        <div class="mono">ID: 501</div>
+                        <div class="muted">Qtd: 2</div>
+                      </div>
+                      <div class="chip">
+                        <div class="mono">ID: 812</div>
+                        <div class="muted">Qtd: 1</div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </article>
+
+            <article class="card card--accent-left">
+              <div class="card__content p-4">
+                <div class="stack-3">
+                  <div class="row between start">
+                    <div>
+                      <h3 class="text-sm strong">Curativo</h3>
+                      <p class="text-xxs muted">ID: 1002</p>
+                    </div>
+                    <div class="row gap-2">
+                      <span class="badge badge--secondary text-xxs">Pendente</span>
+                      <span class="badge badge--destructive text-xxs">Intercorrência</span>
+                    </div>
+                  </div>
+
+                  <hr class="separator" />
+
+                  <div class="grid grid--2 gap-3 text-xxs">
+                    <div class="stack-2">
+                      <div>
+                        <span class="muted">Paciente:</span>
+                        <p class="mono break">0x3a44...89DD</p>
+                      </div>
+                      <div>
+                        <span class="muted">Profissional:</span>
+                        <p class="mono break">0x91C3...7aF4</p>
+                      </div>
+                    </div>
+
+                    <div class="stack-2">
+                      <div>
+                        <span class="muted">Procedimento Anterior:</span>
+                        <p class="mono">1001</p>
+                      </div>
+                      <div>
+                        <span class="muted">Tipo ID:</span>
+                        <p class="mono">3</p>
+                      </div>
+                    </div>
+                  </div>
+
+                  <hr class="separator" />
+                  <div>
+                    <h4 class="text-xxs muted mb-2">Materiais Utilizados:</h4>
+                    <div class="grid grid--auto-fit gap-2">
+                      <div class="chip">
+                        <div class="mono">ID: 612</div>
+                        <div class="muted">Qtd: 4</div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </article>
+          </div>
+        </div>
+      </section>
+    </main>
+  </div>
+
+  <!-- Dica: troque theme-light por theme-dark no html para modo escuro -->
+  <script src="scripts.js"></script>
+</body>
+
+</html>
