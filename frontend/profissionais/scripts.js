@@ -90,15 +90,15 @@
   }
 
   async function loadProcedimentos() {
-    const result = await apiGet("/api/procedimentos");
-    if (!result?.success) {
-      throw new Error(result?.error || "Erro ao carregar procedimentos");
-    }
-    const d = result.data || {};
-    state.procedimentos = Array.isArray(d.procedimentos) ? d.procedimentos : [];
-    state.tiposProcedimento = Array.isArray(d.tiposProcedimento)
-      ? d.tiposProcedimento
-      : [];
+    if (!state.selectedProfissionalWallet) return;
+    const result = await apiGet(
+      `/api/procedimentos/${state.selectedProfissionalWallet}`,
+    );
+    const d = result || [];
+    state.procedimentos = Array.isArray(d) ? d : [];
+    // state.tiposProcedimento = Array.isArray(d.tiposProcedimento)
+    //   ? d.tiposProcedimento
+    //   : [];
   }
 
   async function cadastrarProfissional(payload) {
@@ -166,12 +166,13 @@
     listEl.addEventListener("click", onProfissionaisClick, { once: true });
   }
 
-  function onProfissionaisClick(e) {
+  async function onProfissionaisClick(e) {
     const card = e.target.closest(".card.card--clickable");
     if (!card) return;
     const wallet = card.getAttribute("data-wallet");
     if (!wallet) return;
     state.selectedProfissionalWallet = wallet;
+    await loadProcedimentos();
     renderProfissionais();
     renderProcedimentos();
     profissionaisCard.scrollArea.addEventListener(
@@ -204,7 +205,6 @@
     const prof = getSelectedProfissional();
 
     if (!prof) {
-      // Se nada selecionado, limpa a área e descrição
       if (procedimentosCard.descEl) {
         procedimentosCard.descEl.textContent =
           "Selecione um profissional para visualizar os procedimentos";
@@ -498,7 +498,8 @@
 
     setLoading(true);
     try {
-      await Promise.all([loadProfissionais(), loadProcedimentos()]);
+      await loadProfissionais();
+      await loadProcedimentos();
       // Seleciona automaticamente o primeiro profissional (se existir)
       if (state.profissionais.length > 0) {
         state.selectedProfissionalWallet = state.profissionais[0].wallet;

@@ -1,13 +1,17 @@
+from typing import List
 import os
 from fastapi import FastAPI, HTTPException
 from fastapi.responses import HTMLResponse, FileResponse
 from pydantic import BaseModel, Field
 from web3 import Web3
-from contract import address, abi
+from contract import profissionais_address, profissionais_abi, procedimento_address, procedimento_abi
 
 w3 = Web3(Web3.HTTPProvider("https://sepolia.drpc.org"))
-address_checksum = w3.to_checksum_address(address)
-contract = w3.eth.contract(address=address_checksum, abi=abi)
+address_checksum = w3.to_checksum_address(profissionais_address)
+profissionais_contract = w3.eth.contract(address=address_checksum, abi=profissionais_abi)
+
+address_checksum = w3.to_checksum_address(procedimento_address)
+procedimento_contract = w3.eth.contract(address=address_checksum, abi=procedimento_abi)
 
 admin_address = w3.to_checksum_address(os.getenv("ADMIN_ADDRESS"))
 admin_skey = os.getenv("ADMIN_SKEY")
@@ -35,6 +39,19 @@ class ProfissionalResponse(BaseModel):
     registro: str
     ativo: bool
 
+class MaterialUtilizado(BaseModel):
+    material_id: int
+    quantidade: int
+
+class Procedimento(BaseModel):
+    id: int
+    id_paciente: str
+    id_profissional: str
+    id_procedimento_anterior: int
+    materiais: List[MaterialUtilizado]
+    tipo_procedimento_id: int
+    intercorrencia: bool
+    cadastrado: bool
 
 class TransactionResponse(BaseModel):
     transaction_hash: str
@@ -58,8 +75,7 @@ async def serve_scripts():
 
 @app.get("/api/profissionais")
 async def get_all_profissionais():
-    res = contract.functions.getAllProfissionais().call()
-    print(res[0])
+    res = profissionais_contract.functions.getAllProfissionais().call()
 
     return list(map(
         lambda p: ProfissionalResponse(
@@ -77,7 +93,7 @@ async def get_all_profissionais():
 @app.get("/api/profissionais/{wallet}")
 async def get_profissional(wallet: str):
     wallet = w3.to_checksum_address(wallet)
-    res = contract.functions.getProfissional(wallet).call()
+    res = profissionais_contract.functions.getProfissional(wallet).call()
     return ProfissionalResponse(
         wallet=res[0],
         id_legado=res[1],
@@ -87,6 +103,18 @@ async def get_profissional(wallet: str):
         ativo=res[5],
     )
 
+@app.get("/api/procedimentos/{wallet}")
+async def get_procedimentos(wallet: str):
+    wallet = w3.to_checksum_address(wallet)
+    res: List[int] = profissionais_contract.functions.getProcedimentosDoProfissional(wallet).call()
+    procedimentos = []
+    for id in res:
+        p: Procedimento = procedimento_contract.functions.getProcedimento(id).call()
+        procedimentos.append(p)
+
+    print(procedimentos)
+    return procedimentos
+
 
 @app.post("/api/profissionais", response_model=TransactionResponse)
 async def criar_profissional(
@@ -95,7 +123,7 @@ async def criar_profissional(
     try:
         wallet_checksum = w3.to_checksum_address(request.wallet)
 
-        transaction = contract.functions.novoProfissional(
+        transaction = profissionais_contract.functions.novoProfissional(
             wallet=wallet_checksum,
             idLegado=request.idLegado,
             nome=request.nome,
