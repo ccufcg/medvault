@@ -2,17 +2,16 @@
 pragma solidity >=0.4.0 <0.9.0;
 
 import "dapp/procedimentos/libs.sol";
+import "dapp/profissionais/libs.sol";
 
 contract GerenciadorTipoProcedimento is IGerenciadorTiposProcedimento, IVerificadorTipoProcedimento {
     uint16 private quantos_tipos;
     mapping(uint16 => Entidades.TipoProcedimento) private tipos_procedimento;
     
     address private admin;
-    address private verificador_categoria_saude;
 
-    constructor(address verificador_categoria_saude_address) {
+    constructor() {
         admin = msg.sender;
-        verificador_categoria_saude = verificador_categoria_saude_address;
     }
 
     modifier isAdmin() {
@@ -25,11 +24,10 @@ contract GerenciadorTipoProcedimento is IGerenciadorTiposProcedimento, IVerifica
         _;
     }
 
-    function cadastraTipo(string memory tipo, uint16 categoria_profissional_id) external isAdmin returns (Entidades.TipoProcedimento memory) {
-        require(IVerificadorCategoriaSaude(verificador_categoria_saude).VerificarExistenciaCategoria(categoria_profissional_id), categoriaSaudeNaoExiste(categoria_profissional_id));
+    function cadastraTipo(string memory tipo, EntidadesProfissionais.Categoria categoria) external isAdmin returns (Entidades.TipoProcedimento memory) {
         require(!tipos_procedimento[quantos_tipos].cadastrado, tipoProcedimentoLimiteAtingido());
-        tipos_procedimento[quantos_tipos] = Entidades.TipoProcedimento(quantos_tipos, tipo, categoria_profissional_id, true);
-        emit TipoCadastrado(quantos_tipos, tipo, categoria_profissional_id);
+        tipos_procedimento[quantos_tipos] = Entidades.TipoProcedimento(quantos_tipos, tipo, categoria, true);
+        emit TipoCadastrado(quantos_tipos, tipo, categoria);
         quantos_tipos++;
         return tipos_procedimento[quantos_tipos-1];
     }
@@ -46,11 +44,10 @@ contract GerenciadorTipoProcedimento is IGerenciadorTiposProcedimento, IVerifica
         }
         tipos_procedimento[temp].cadastrado = false;
         quantos_tipos--;
-        emit TipoDeletado(id, tipo.tipo, tipo.categoria_profissional_id);
+        emit TipoDeletado(id, tipo.tipo, tipo.categoria);
     }
 
     function verificarTipoProcedimento(uint16 procedimento_id) external view returns (bool) {
         return tipos_procedimento[procedimento_id].cadastrado;
     }
-
 }

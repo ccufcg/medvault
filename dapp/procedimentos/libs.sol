@@ -1,12 +1,14 @@
 // SPDX-License-Identifier: GPL
 pragma solidity >=0.4.0 <0.9.0;
 
+import "dapp/profissionais/libs.sol";
+
 library Entidades {
 
     struct TipoProcedimento {
         uint16 id;
         string tipo;
-        uint16 categoria_profissional_id;
+        EntidadesProfissionais.Categoria categoria;
         bool cadastrado;
     }
 
@@ -29,14 +31,14 @@ library Entidades {
 }
 
 interface IGerenciadorTiposProcedimento {
-    function cadastraTipo(string memory tipo, uint16 categoria_profissional_id) external returns (Entidades.TipoProcedimento memory);
+    function cadastraTipo(string memory tipo, EntidadesProfissionais.Categoria categoria) external returns (Entidades.TipoProcedimento memory);
     function getTipo(uint16 id) external view returns(Entidades.TipoProcedimento memory);
     function deleteTipo(uint16 id) external;
 
-    event TipoCadastrado(uint16 id, string tipo, uint16 categoria_profissional_id);
-    event TipoDeletado(uint16 id, string tipo, uint16 categoria_profissional_id);
+    event TipoCadastrado(uint16 id, string tipo, EntidadesProfissionais.Categoria categoria);
+    event TipoDeletado(uint16 id, string tipo, EntidadesProfissionais.Categoria categoria);
 
-    error categoriaSaudeNaoExiste(uint16 categoria_profissional_id);
+    error tipoProcedimentoNaoExiste(uint16 id);
     error tipoProcedimentoLimiteAtingido();
 }
 
@@ -49,14 +51,6 @@ interface IGerenciadorProcedimento {
     event NotificacaoIntercorrencia(uint indexed id, address indexed id_profissional);
     event MaterialCadastrado(uint indexed estoque_id, uint8 quantidade, uint indexed id, address indexed id_profissional);
     event ItemAltoCustoUtilizado(uint indexed estoque_id, uint8 quantidade, uint indexed id, address indexed id_profissional);
-
-    error isNotCapableRegisterProcedure(address sender);
-    error procedimentoLimiteAtingido();
-    error tipoProcedimentoNaoExiste(uint16 tipo_procedimento_id);
-    error pacienteNaoExiste(address id_paciente);
-    error profisionalNaoExiste(address id_profissional);
-    error procedimentoNaoExiste(uint id_procedimento);
-    error estoqueNaoExiste(uint estoque_id);
 }
 
 interface IVerificadorCategoriaSaude {
