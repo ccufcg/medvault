@@ -1,14 +1,5 @@
-"""
-Contract ABI definition for ProfissionalManager contract.
-This file contains the ABI (Application Binary Interface) for interacting with the Solidity contract.
-"""
-
-PROFISSIONAL_MANAGER_ABI = [
-	{
-		"inputs": [],
-		"stateMutability": "nonpayable",
-		"type": "constructor"
-	},
+address = "0x22944CcE871b9929d7ff59DDdaCC0C72Eeb30BE6"
+abi = [
 	{
 		"inputs": [],
 		"name": "enderecoZero",
@@ -163,6 +154,87 @@ PROFISSIONAL_MANAGER_ABI = [
 				"internalType": "address",
 				"name": "wallet",
 				"type": "address"
+			},
+			{
+				"internalType": "uint256",
+				"name": "idLegado",
+				"type": "uint256"
+			},
+			{
+				"internalType": "string",
+				"name": "nome",
+				"type": "string"
+			},
+			{
+				"internalType": "enum EntidadesProfissionais.Categoria",
+				"name": "categoria",
+				"type": "uint8"
+			},
+			{
+				"internalType": "string",
+				"name": "registro",
+				"type": "string"
+			},
+			{
+				"internalType": "bool",
+				"name": "ativo",
+				"type": "bool"
+			}
+		],
+		"name": "novoProfissional",
+		"outputs": [
+			{
+				"components": [
+					{
+						"internalType": "address",
+						"name": "wallet",
+						"type": "address"
+					},
+					{
+						"internalType": "uint256",
+						"name": "idLegado",
+						"type": "uint256"
+					},
+					{
+						"internalType": "string",
+						"name": "nome",
+						"type": "string"
+					},
+					{
+						"internalType": "enum EntidadesProfissionais.Categoria",
+						"name": "categoria",
+						"type": "uint8"
+					},
+					{
+						"internalType": "string",
+						"name": "registro",
+						"type": "string"
+					},
+					{
+						"internalType": "bool",
+						"name": "ativo",
+						"type": "bool"
+					}
+				],
+				"internalType": "struct EntidadesProfissionais.Profissional",
+				"name": "",
+				"type": "tuple"
+			}
+		],
+		"stateMutability": "nonpayable",
+		"type": "function"
+	},
+	{
+		"inputs": [],
+		"stateMutability": "nonpayable",
+		"type": "constructor"
+	},
+	{
+		"inputs": [
+			{
+				"internalType": "address",
+				"name": "wallet",
+				"type": "address"
 			}
 		],
 		"name": "getProcedimentosDoProfissional",
@@ -274,82 +346,6 @@ PROFISSIONAL_MANAGER_ABI = [
 		"inputs": [
 			{
 				"internalType": "address",
-				"name": "wallet",
-				"type": "address"
-			},
-			{
-				"internalType": "uint256",
-				"name": "idLegado",
-				"type": "uint256"
-			},
-			{
-				"internalType": "string",
-				"name": "nome",
-				"type": "string"
-			},
-			{
-				"internalType": "enum EntidadesProfissionais.Categoria",
-				"name": "categoria",
-				"type": "uint8"
-			},
-			{
-				"internalType": "string",
-				"name": "registro",
-				"type": "string"
-			},
-			{
-				"internalType": "bool",
-				"name": "ativo",
-				"type": "bool"
-			}
-		],
-		"name": "novoProfissional",
-		"outputs": [
-			{
-				"components": [
-					{
-						"internalType": "address",
-						"name": "wallet",
-						"type": "address"
-					},
-					{
-						"internalType": "uint256",
-						"name": "idLegado",
-						"type": "uint256"
-					},
-					{
-						"internalType": "string",
-						"name": "nome",
-						"type": "string"
-					},
-					{
-						"internalType": "enum EntidadesProfissionais.Categoria",
-						"name": "categoria",
-						"type": "uint8"
-					},
-					{
-						"internalType": "string",
-						"name": "registro",
-						"type": "string"
-					},
-					{
-						"internalType": "bool",
-						"name": "ativo",
-						"type": "bool"
-					}
-				],
-				"internalType": "struct EntidadesProfissionais.Profissional",
-				"name": "",
-				"type": "tuple"
-			}
-		],
-		"stateMutability": "nonpayable",
-		"type": "function"
-	},
-	{
-		"inputs": [
-			{
-				"internalType": "address",
 				"name": "profissional_id",
 				"type": "address"
 			}
@@ -366,18 +362,3 @@ PROFISSIONAL_MANAGER_ABI = [
 		"type": "function"
 	}
 ]
-
-# Enum values for Categoria
-CATEGORIA_MEDICO = 0
-CATEGORIA_ENFERMEIRO = 1
-
-# Error selectors (first 4 bytes of keccak256 hash of error signature)
-ERROR_SELECTORS = {
-    "enderecoZero": "0x" + "0000000000000000000000000000000000000000000000000000000000000000",
-    "profissionalJaCadastrado": "0x" + "0000000000000000000000000000000000000000000000000000000000000001",
-    "profissionalNaoCadastrado": "0x" + "0000000000000000000000000000000000000000000000000000000000000002",
-    "profissionalJaAtivo": "0x" + "0000000000000000000000000000000000000000000000000000000000000003",
-    "profissionalJaInativo": "0x" + "0000000000000000000000000000000000000000000000000000000000000004",
-    "moduloNaoAutorizado": "0x" + "0000000000000000000000000000000000000000000000000000000000000005",
-    "isNotAdmin": "0x" + "0000000000000000000000000000000000000000000000000000000000000006"
-}

@@ -1,5 +1,5 @@
 (() => {
-  apiGet("/api/profissionais/0x4F0ed8b70AeE11dF88748c309566772cD03fe94C") 
+  apiGet("/api/profissionais/0x5FB0a5ba9ebe2b5C1E138dC06241b09029a773ab") 
   // -----------------------
   // Helpers DOM / Estado
   // -----------------------
