@@ -2,10 +2,12 @@
 import os, json
 from pathlib import Path
 from web3 import Web3
+from dotenv import load_dotenv
 
+load_dotenv()
 RPC_URL = os.getenv("RPC_URL", "http://127.0.0.1:8545")
-PRIVATE_KEY  = "0xc87509a1c067bbde78beb793e6fa76530b6382a4c0241e5e4a9ec0a0f44dc0d3"
-ADDR_ESTOQUE = "0x8CdaF0CD259887258Bc13a92C0a6dA92698644C0"
+PRIVATE_KEY  = os.getenv("PRIVATE_KEY")
+ADDR_ESTOQUE = os.getenv("ADDR_ESTOQUE")
 
 w3 = Web3(Web3.HTTPProvider(RPC_URL))
 ACCOUNT = w3.eth.account.from_key(PRIVATE_KEY)

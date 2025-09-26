@@ -1,6 +1,9 @@
 from flask import Flask, request, jsonify, Blueprint
 from web3 import Web3
 import json, os
+from dotenv import load_dotenv
+
+load_dotenv()
 
 api_estoque = Blueprint("api_estoque",__name__)
 w3 = Web3(Web3.HTTPProvider(os.getenv("RPC_URL","http://127.0.0.1:8545")))
@@ -11,8 +14,8 @@ with open("estoque/config/contrato_estoque.idl") as f:
 with open("estoque/config/contrato_procedimento.idl") as f:
     abi_proc = json.load(f)
 
-ADDR_ESTOQUE = "0x8CdaF0CD259887258Bc13a92C0a6dA92698644C0"
-ADDR_PROCED = "0x345cA3e014Aaf5dcA488057592ee47305D9B3e10"
+ADDR_ESTOQUE = os.getenv("ADDR_ESTOQUE")
+ADDR_PROCED = os.getenv("ADDR_PROCED")
 estoque = w3.eth.contract(address=ADDR_ESTOQUE, abi=abi_estoque)
 proced = w3.eth.contract(address=ADDR_PROCED, abi=abi_proc)
 

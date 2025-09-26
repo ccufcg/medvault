@@ -1,62 +1,5 @@
 [
 	{
-		"inputs": [
-			{
-				"internalType": "string",
-				"name": "nomeCategoria",
-				"type": "string"
-			}
-		],
-		"name": "addCategoria",
-		"outputs": [],
-		"stateMutability": "nonpayable",
-		"type": "function"
-	},
-	{
-		"inputs": [
-			{
-				"internalType": "uint256",
-				"name": "idItemHospital",
-				"type": "uint256"
-			},
-			{
-				"internalType": "string",
-				"name": "lote",
-				"type": "string"
-			},
-			{
-				"internalType": "string",
-				"name": "categoria",
-				"type": "string"
-			},
-			{
-				"internalType": "uint256",
-				"name": "dataValidade",
-				"type": "uint256"
-			},
-			{
-				"internalType": "bool",
-				"name": "altoCusto",
-				"type": "bool"
-			},
-			{
-				"internalType": "string",
-				"name": "descricao",
-				"type": "string"
-			}
-		],
-		"name": "addItem",
-		"outputs": [
-			{
-				"internalType": "uint256",
-				"name": "",
-				"type": "uint256"
-			}
-		],
-		"stateMutability": "nonpayable",
-		"type": "function"
-	},
-	{
 		"inputs": [],
 		"stateMutability": "nonpayable",
 		"type": "constructor"
@@ -115,13 +58,57 @@
 	{
 		"inputs": [
 			{
+				"internalType": "string",
+				"name": "nomeCategoria",
+				"type": "string"
+			}
+		],
+		"name": "addCategoria",
+		"outputs": [],
+		"stateMutability": "nonpayable",
+		"type": "function"
+	},
+	{
+		"inputs": [
+			{
 				"internalType": "uint256",
-				"name": "uuid",
+				"name": "idItemHospital",
+				"type": "uint256"
+			},
+			{
+				"internalType": "string",
+				"name": "lote",
+				"type": "string"
+			},
+			{
+				"internalType": "string",
+				"name": "categoria",
+				"type": "string"
+			},
+			{
+				"internalType": "uint256",
+				"name": "dataValidade",
+				"type": "uint256"
+			},
+			{
+				"internalType": "bool",
+				"name": "altoCusto",
+				"type": "bool"
+			},
+			{
+				"internalType": "string",
+				"name": "descricao",
+				"type": "string"
+			}
+		],
+		"name": "addItem",
+		"outputs": [
+			{
+				"internalType": "uint256",
+				"name": "",
 				"type": "uint256"
 			}
 		],
-		"name": "registrarUso",
-		"outputs": [],
 		"stateMutability": "nonpayable",
 		"type": "function"
 	},
@@ -161,11 +148,67 @@
 		"inputs": [
 			{
 				"internalType": "uint256",
+				"name": "idItemHospital",
+				"type": "uint256"
+			}
+		],
+		"name": "getItemByHospitalId",
+		"outputs": [
+			{
+				"components": [
+					{
+						"internalType": "uint256",
+						"name": "idHash",
+						"type": "uint256"
+					},
+					{
+						"internalType": "uint256",
+						"name": "idItemHospital",
+						"type": "uint256"
+					},
+					{
+						"internalType": "uint256",
+						"name": "dataValidade",
+						"type": "uint256"
+					},
+					{
+						"internalType": "string",
+						"name": "categoria",
+						"type": "string"
+					},
+					{
+						"internalType": "string",
+						"name": "descricao",
+						"type": "string"
+					},
+					{
+						"internalType": "bool",
+						"name": "altoCusto",
+						"type": "bool"
+					},
+					{
+						"internalType": "string",
+						"name": "lote",
+						"type": "string"
+					}
+				],
+				"internalType": "struct Entidades.ItemEstoque",
+				"name": "",
+				"type": "tuple"
+			}
+		],
+		"stateMutability": "view",
+		"type": "function"
+	},
+	{
+		"inputs": [
+			{
+				"internalType": "uint256",
 				"name": "uuid",
 				"type": "uint256"
 			}
 		],
-		"name": "getItem",
+		"name": "getItemUuid",
 		"outputs": [
 			{
 				"components": [
@@ -324,6 +367,19 @@
 			}
 		],
 		"stateMutability": "view",
+		"type": "function"
+	},
+	{
+		"inputs": [
+			{
+				"internalType": "uint256",
+				"name": "uuid",
+				"type": "uint256"
+			}
+		],
+		"name": "registrarUso",
+		"outputs": [],
+		"stateMutability": "nonpayable",
 		"type": "function"
 	},
 	{
