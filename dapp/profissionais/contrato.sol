@@ -4,7 +4,7 @@ pragma solidity >=0.4.0 <0.9.0;
 import "dapp/procedimentos/libs.sol";
 import "dapp/profissionais/libs.sol";
 
-contract ProfissionalManager is IGerenciadorProfissionais, IVerificadorProfissional {
+contract ProfissionalManager is IGerenciadorProfissionais, IVerificadorProfissional, IProcedimentoStorage {
     address private owner;
 
     mapping(address => EntidadesProfissionais.Profissional) private _profissionais;
@@ -141,5 +141,9 @@ contract ProfissionalManager is IGerenciadorProfissionais, IVerificadorProfissio
             }
         }
         return filtered;
+    }
+
+    function insertProcedimento(uint procedimento_id, address wallet) external {
+        _procedimentosDoProfissional[wallet].push(procedimento_id);
     }
 }
