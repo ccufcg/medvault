@@ -81,7 +81,7 @@ def add_item():
         {
           "idItemHospital": 101,
           "lote": "L001",
-          "categoria": 0,
+          "categoria": "Antibiotico",
           "dataValidade": 1893456000,
           "altoCusto": false,
           "descricao": "Luvas descartáveis"
@@ -104,7 +104,7 @@ def add_item():
             estoque.functions.addItem(
                 int(data["idItemHospital"]),
                 data["lote"],
-                int(data["categoria"]),
+                data["categoria"],
                 int(data["dataValidade"]),
                 bool(data["altoCusto"]),
                 data["descricao"]
@@ -117,6 +117,32 @@ def add_item():
         }
     except Exception as e:
         return {"error": str(e)}, 500
+
+@api_estoque.route("/api/itens/get/<int:uuid>", methods=["GET"])
+def get_item(uuid):
+    """
+    GET /itens/<uuid>
+    Retorna as informações completas do item de estoque.
+    """
+    try:
+        item = estoque.functions.getItem(uuid).call()
+
+        # A estrutura retornada pelo contrato segue a ordem definida no ABI.
+        result = {
+            "idHash": item[0],
+            "idItemHospital": item[1],
+            "dataValidade": item[2],
+            "categoria": item[3],
+            "descricao": item[4],
+            "altoCusto": item[5],
+            "lote": item[6],
+        }
+        return jsonify(result), 200
+
+    except Exception as e:
+        # Caso o contrato lance o "Item inexistente" ou outro erro
+        return jsonify({"error": str(e)}), 400
+
 @api_estoque.route("/", methods=["GET"])
 def home():
     return jsonify({"msg": "ok"})
