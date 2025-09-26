@@ -15,17 +15,17 @@ contract GerenciadorTipoProcedimento is IGerenciadorTiposProcedimento, IVerifica
     }
 
     modifier isAdmin() {
-        require(msg.sender == admin, isNotAdmin(admin, msg.sender));
+        require(msg.sender == admin, "is not admin");
         _;
     }
 
     modifier typeExists(uint16 id) {
-        require(tipos_procedimento[id].cadastrado, tipoProcedimentoNaoExiste(id));
+        require(tipos_procedimento[id].cadastrado, "type not exist");
         _;
     }
 
     function cadastraTipo(string memory tipo, EntidadesProfissionais.Categoria categoria) external isAdmin returns (Entidades.TipoProcedimento memory) {
-        require(!tipos_procedimento[quantos_tipos].cadastrado, tipoProcedimentoLimiteAtingido());
+        require(!tipos_procedimento[quantos_tipos].cadastrado, "type ammount exceed the limit!");
         tipos_procedimento[quantos_tipos] = Entidades.TipoProcedimento(quantos_tipos, tipo, categoria, true);
         emit TipoCadastrado(quantos_tipos, tipo, categoria);
         quantos_tipos++;

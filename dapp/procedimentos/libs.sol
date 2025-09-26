@@ -40,6 +40,7 @@ interface IGerenciadorTiposProcedimento {
 
     error tipoProcedimentoNaoExiste(uint16 id);
     error tipoProcedimentoLimiteAtingido();
+    error isNotAdmin(address admin, address sender);
 }
 
 interface IGerenciadorProcedimento {
@@ -77,5 +78,3 @@ interface IProcedimentoStorage {
 interface IVerificadorTipoProcedimento {
     function verificarTipoProcedimento(uint16 procedimento_id) external view returns (bool);
 }
-
-error isNotAdmin(address admin, address sender);
