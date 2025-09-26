@@ -73,9 +73,18 @@ contract Estoque is IVerificadorEstoque {
         return contadorIds;
     }
 
-    function getItem(uint uuid) external view returns (Entidades.ItemEstoque memory) {
+    function getItemUuid(uint uuid) external view returns (Entidades.ItemEstoque memory) {
         require(catalogoItens[uuid].idHash != 0, "Item inexistente");
         return catalogoItens[uuid];
+    }
+
+    function getItemByHospitalId(uint idItemHospital) external view returns (Entidades.ItemEstoque memory){
+        for (uint i = 0; i < contadorIds; i++) {
+            if (catalogoItens[i].idItemHospital == idItemHospital) {
+                return catalogoItens[i];
+            }
+        }
+        revert("Item inexistente");
     }
 
     
