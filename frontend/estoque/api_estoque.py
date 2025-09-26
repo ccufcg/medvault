@@ -1,18 +1,18 @@
-from flask import Flask, request, jsonify
+from flask import Flask, request, jsonify, Blueprint
 from web3 import Web3
 import json, os
 
-api_estoque = Flask(__name__)
+api_estoque = Blueprint("api_estoque",__name__)
 w3 = Web3(Web3.HTTPProvider(os.getenv("RPC_URL","http://127.0.0.1:8545")))
 
-# Carregar ABI
-with open("contracts/Estoque.json") as f:
-    abi_estoque = json.load(f)["abi"]
-with open("contracts/Procedimentos.json") as f:
-    abi_proc = json.load(f)["abi"]
+# Carregar ABI frontend\estoque\config
+with open("estoque/config/contrato_estoque.idl") as f:
+    abi_estoque = json.load(f)
+with open("estoque/config/contrato_procedimento.idl") as f:
+    abi_proc = json.load(f)
 
-ADDR_ESTOQUE = os.getenv("ADDRESS_ESTOQUE")
-ADDR_PROCED = os.getenv("ADDRESS_PROCED")
+ADDR_ESTOQUE = os.getenv("0x8CdaF0CD259887258Bc13a92C0a6dA92698644C0")
+ADDR_PROCED = os.getenv("0x345cA3e014Aaf5dcA488057592ee47305D9B3e10")
 estoque = w3.eth.contract(address=ADDR_ESTOQUE, abi=abi_estoque)
 proced = w3.eth.contract(address=ADDR_PROCED, abi=abi_proc)
 
@@ -50,7 +50,7 @@ def add_item():
     if not auth or not auth.lower().startswith("bearer "):
         return {"error": "Authorization header ausente ou inválido"}, 401
     private_key = auth.split()[1].strip()
-
+    print(private_key)
     data = request.get_json(force=True)
     campos = ["idItemHospital", "lote", "categoria",
               "dataValidade", "altoCusto", "descricao"]
@@ -75,18 +75,33 @@ def add_item():
         }
     except Exception as e:
         return {"error": str(e)}, 500
-
+@api_estoque.route("/", methods=["GET"])
+def home():
+    return jsonify({"msg": "ok"})
 
 @api_estoque.route("/api/procedimentos/alto-custo", methods=["GET"])
 def listar_proc_alto_custo():
-    """Consulta procedimentos que utilizaram itens de alto custo (somente leitura)."""
-    procs = proced.functions.listarProcedimentos().call()
+
     itens_alto = estoque.functions.listarItensAltoCusto().call()
+    print(itens_alto)
     ids_alto = {item[0] for item in itens_alto}  # assume idHash no índice 0
 
     result = []
-    for p in procs:
-        proc_id, desc, itens_usados = p[0], p[1], p[2]
+    proc_id = 1
+
+    while True:
+        try:
+            # getProcedimento retorna (id, descricao, idsItens[])
+            p = proced.functions.getProcedimento(proc_id).call()
+        except Exception as e:
+            # Qualquer outro erro encerra o loop de forma segura
+            print(f"Erro ao buscar procedimento {proc_id}: {e}")
+            break
+        
+        print(p)
+        # p = (id, descricao, [idsItens])
+        desc = p[1]
+        itens_usados = p[2]
         usados_alto = [i for i in itens_usados if i in ids_alto]
         if usados_alto:
             result.append({
@@ -94,6 +109,8 @@ def listar_proc_alto_custo():
                 "descricao": desc,
                 "itensAltoCustoUsados": usados_alto
             })
+
+        proc_id += 1
     return jsonify(result)
 
 
