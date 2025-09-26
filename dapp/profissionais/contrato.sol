@@ -8,6 +8,7 @@ contract ProfissionalManager is IGerenciadorProfissionais, IVerificadorProfissio
     address private owner;
 
     mapping(address => EntidadesProfissionais.Profissional) private _profissionais;
+    address[] private _profissionaisList;
     mapping(EntidadesProfissionais.Categoria => address[]) private _indicePorCategoria;
     mapping(address => uint[]) private _procedimentosDoProfissional;
 
@@ -43,6 +44,7 @@ contract ProfissionalManager is IGerenciadorProfissionais, IVerificadorProfissio
 
         _profissionais[wallet] = p;
         _indicePorCategoria[categoria].push(wallet);
+        _profissionaisList.push(wallet);
 
         emit ProfissionalCadastrado(wallet, idLegado);
 
@@ -89,11 +91,11 @@ contract ProfissionalManager is IGerenciadorProfissionais, IVerificadorProfissio
         view
         returns (EntidadesProfissionais.Profissional[] memory) 
     {
-        uint256 n = _profissionaisIndex.length;
-        Profissional[] memory arr = new Profissional[](n);
+        uint256 n = _profissionaisList.length;
+        EntidadesProfissionais.Profissional[] memory arr = new EntidadesProfissionais.Profissional[](n);
         
         for (uint256 i = 0; i < n; i++) {
-            arr[i] = _profissionais[_profissionaisIndex[i]];
+            arr[i] = _profissionais[_profissionaisList[i]];
         }
 
         return arr;

@@ -1,5 +1,4 @@
 (() => {
-  apiGet("/api/profissionais/0x5FB0a5ba9ebe2b5C1E138dC06241b09029a773ab") 
   // -----------------------
   // Helpers DOM / Estado
   // -----------------------
@@ -30,8 +29,7 @@
           card,
           titleEl,
           descEl: qs(".card__header .card__description", card),
-          scrollArea:
-            qs(".card__content .scroll-area", card) ||
+          scrollArea: qs(".card__content .scroll-area", card) ||
             qs(".card__content", card),
         };
       }
@@ -54,10 +52,7 @@
   // Formatação de campos
   // -----------------------
   function formatCategoria(c) {
-    if (!c) return "";
-    if (c.toLowerCase() === "medico") return "Médico";
-    if (c.toLowerCase() === "enfermeiro") return "Enfermeiro";
-    return c;
+    return c == 0 ? "Médico" : "Enfermeiro";
   }
 
   function formatWallet(w) {
@@ -91,15 +86,14 @@
 
   async function loadProfissionais() {
     const result = await apiGet("/api/profissionais");
-    if (!result?.success)
-      throw new Error(result?.error || "Erro ao carregar profissionais");
-    state.profissionais = Array.isArray(result.data) ? result.data : [];
+    state.profissionais = Array.isArray(result) ? result : [];
   }
 
   async function loadProcedimentos() {
     const result = await apiGet("/api/procedimentos");
-    if (!result?.success)
+    if (!result?.success) {
       throw new Error(result?.error || "Erro ao carregar procedimentos");
+    }
     const d = result.data || {};
     state.procedimentos = Array.isArray(d.procedimentos) ? d.procedimentos : [];
     state.tiposProcedimento = Array.isArray(d.tiposProcedimento)
@@ -108,31 +102,30 @@
   }
 
   async function cadastrarProfissional(payload) {
-    const result = await apiPost("/api/profissionais", payload);
-    if (!result?.success)
-      throw new Error(result?.error || "Erro ao cadastrar profissional");
-    // adiciona ao estado e retorna item criado
-    const novo = result.data;
-    state.profissionais.push(novo);
-    return novo;
+    await apiPost("/api/profissionais", payload);
+    payload.ativo = true;
+    return payload;
   }
 
   // -----------------------
   // Render: Profissionais
   // -----------------------
   function renderProfissionais() {
+    loadProfissionais();
     if (!profissionaisCard) return;
 
     const total = state.profissionais.length;
     if (profissionaisCard.descEl) {
-      profissionaisCard.descEl.textContent = `${total} ${plural(total, "profissional", "profissionais")} ${plural(total, "cadastrado", "cadastrados")}`;
+      profissionaisCard.descEl.textContent = `${total} ${plural(total, "profissional", "profissionais")
+        } ${plural(total, "cadastrado", "cadastrados")}`;
     }
 
     const listEl = profissionaisCard.scrollArea;
     if (!listEl) return;
 
     if (total === 0) {
-      listEl.innerHTML = `<div class="text-center py-8 muted">Nenhum profissional cadastrado ainda</div>`;
+      listEl.innerHTML =
+        `<div class="text-center py-8 muted">Nenhum profissional cadastrado ainda</div>`;
       return;
     }
 
@@ -141,19 +134,25 @@
         const isSelected = state.selectedProfissionalWallet === p.wallet;
         const badgeCls = p.ativo ? "badge--default" : "badge--secondary";
         return `
-          <article class="card card--clickable ${isSelected ? "card--selected" : ""}" data-wallet="${p.wallet || ""}">
+          <article class="card card--clickable ${isSelected ? "card--selected" : ""
+          }" data-wallet="${p.wallet || ""}">
             <div class="card__content p-4">
               <div class="row between start gap-2">
                 <div class="stack-2 flex-1">
                   <div class="row start center gap-2">
                     <h3 class="text-sm strong">${escapeHtml(p.nome || "")}</h3>
-                    <span class="badge ${badgeCls} text-xxs">${p.ativo ? "Ativo" : "Inativo"}</span>
+                    <span class="badge ${badgeCls} text-xxs">${p.ativo ? "Ativo" : "Inativo"
+          }</span>
                   </div>
                   <div class="meta text-xxs muted">
-                    <div class="row between"><span>ID Hospital:</span><span class="mono">${escapeHtml(String(p.idLegado ?? ""))}</span></div>
-                    <div class="row between"><span>Categoria:</span><span>${escapeHtml(formatCategoria(p.categoria))}</span></div>
-                    <div class="row between"><span>Registro:</span><span class="mono">${escapeHtml(p.registro || "")}</span></div>
-                    <div class="row between"><span>Carteira:</span><span class="mono break">${escapeHtml(formatWallet(p.wallet || ""))}</span></div>
+                    <div class="row between"><span>ID Hospital:</span><span class="mono">${escapeHtml(String(p.id_legado ?? ""))
+          }</span></div>
+                    <div class="row between"><span>Categoria:</span><span>${escapeHtml(formatCategoria(p.categoria))
+          }</span></div>
+                    <div class="row between"><span>Registro:</span><span class="mono">${escapeHtml(p.registro || "")
+          }</span></div>
+                    <div class="row between"><span>Carteira:</span><span class="mono break">${escapeHtml(formatWallet(p.wallet || ""))
+          }</span></div>
                   </div>
                 </div>
                 <button class="button button--ghost button--sm text-xxs">Ver Procedimentos</button>
@@ -164,7 +163,6 @@
       })
       .join("");
 
-    // Delegação de clique para seleção de profissional
     listEl.addEventListener("click", onProfissionaisClick, { once: true });
   }
 
@@ -174,9 +172,8 @@
     const wallet = card.getAttribute("data-wallet");
     if (!wallet) return;
     state.selectedProfissionalWallet = wallet;
-    renderProfissionais(); // re-render para aplicar card--selected
-    renderProcedimentos(); // mostra procedimentos do selecionado
-    // reanexar o listener de delegação (foi once:true)
+    renderProfissionais();
+    renderProcedimentos();
     profissionaisCard.scrollArea.addEventListener(
       "click",
       onProfissionaisClick,
@@ -212,7 +209,8 @@
         procedimentosCard.descEl.textContent =
           "Selecione um profissional para visualizar os procedimentos";
       }
-      listEl.innerHTML = `<div class="text-center py-8 muted">Nenhum profissional selecionado</div>`;
+      listEl.innerHTML =
+        `<div class="text-center py-8 muted">Nenhum profissional selecionado</div>`;
       return;
     }
 
@@ -222,19 +220,22 @@
     const count = doProf.length;
 
     if (procedimentosCard.descEl) {
-      procedimentosCard.descEl.textContent = `Profissional: ${prof.nome} • ${count} ${plural(count, "procedimento", "procedimentos")}`;
+      procedimentosCard.descEl.textContent =
+        `Profissional: ${prof.nome} • ${count} ${plural(count, "procedimento", "procedimentos")
+        }`;
     }
 
     if (count === 0) {
-      listEl.innerHTML = `<div class="text-center py-8 muted">Nenhum procedimento encontrado para este profissional</div>`;
+      listEl.innerHTML =
+        `<div class="text-center py-8 muted">Nenhum procedimento encontrado para este profissional</div>`;
       return;
     }
 
     listEl.innerHTML = doProf
       .map((procedimento) => {
         const tipo = getTipoProcedimentoById(procedimento.tipo_procedimento_id);
-        const titulo =
-          tipo?.tipo || `Procedimento ${procedimento.tipo_procedimento_id}`;
+        const titulo = tipo?.tipo ||
+          `Procedimento ${procedimento.tipo_procedimento_id}`;
         const badgeStatus = procedimento.cadastrado
           ? "badge--default"
           : "badge--secondary";
@@ -252,10 +253,12 @@
                 <div class="row between start">
                   <div>
                     <h3 class="text-sm strong">${escapeHtml(titulo)}</h3>
-                    <p class="text-xxs muted">ID: ${escapeHtml(String(procedimento.id))}</p>
+                    <p class="text-xxs muted">ID: ${escapeHtml(String(procedimento.id))
+          }</p>
                   </div>
                   <div class="row gap-2">
-                    <span class="badge ${badgeStatus} text-xxs">${procedimento.cadastrado ? "Cadastrado" : "Pendente"}</span>
+                    <span class="badge ${badgeStatus} text-xxs">${procedimento.cadastrado ? "Cadastrado" : "Pendente"
+          }</span>
                     ${interc}
                   </div>
                 </div>
@@ -266,47 +269,53 @@
                   <div class="stack-2">
                     <div>
                       <span class="muted">Paciente:</span>
-                      <p class="mono break">${escapeHtml(formatWallet(String(procedimento.id_paciente)))}</p>
+                      <p class="mono break">${escapeHtml(formatWallet(String(procedimento.id_paciente)))
+          }</p>
                     </div>
                     <div>
                       <span class="muted">Profissional:</span>
-                      <p class="mono break">${escapeHtml(formatWallet(String(procedimento.id_profissional)))}</p>
+                      <p class="mono break">${escapeHtml(formatWallet(String(procedimento.id_profissional)))
+          }</p>
                     </div>
                   </div>
                   <div class="stack-2">
                     <div>
                       <span class="muted">Procedimento Anterior:</span>
-                      <p class="mono">${escapeHtml(String(procedimento.id_procedimento_anterior || "Nenhum"))}</p>
+                      <p class="mono">${escapeHtml(String(procedimento.id_procedimento_anterior || "Nenhum"))
+          }</p>
                     </div>
                     <div>
                       <span class="muted">Tipo ID:</span>
-                      <p class="mono">${escapeHtml(String(procedimento.tipo_procedimento_id))}</p>
+                      <p class="mono">${escapeHtml(String(procedimento.tipo_procedimento_id))
+          }</p>
                     </div>
                   </div>
                 </div>
 
-                ${
-                  materiais.length > 0
-                    ? `
+                ${materiais.length > 0
+            ? `
                   <hr class="separator" />
                   <div>
                     <h4 class="text-xxs muted mb-2">Materiais Utilizados:</h4>
                     <div class="grid grid--auto-fit gap-2">
                       ${materiais
-                        .map(
-                          (m) => `
+              .map(
+                (m) => `
                         <div class="chip">
-                          <div class="mono">ID: ${escapeHtml(String(m.material_id))}</div>
-                          <div class="muted">Qtd: ${escapeHtml(String(m.quantidade))}</div>
+                          <div class="mono">ID: ${escapeHtml(String(m.material_id))
+                  }</div>
+                          <div class="muted">Qtd: ${escapeHtml(String(m.quantidade))
+                  }</div>
                         </div>
                       `,
-                        )
-                        .join("")}
+              )
+              .join("")
+            }
                     </div>
                   </div>
                 `
-                    : ""
-                }
+            : ""
+          }
               </div>
             </div>
           </article>
@@ -366,7 +375,6 @@
 
   async function onSubmitCadastro(e) {
     e.preventDefault();
-    console.log("hi")
     showFormErrors([]);
     const btn = cadastroCard.btn;
     try {
@@ -392,9 +400,6 @@
         registro: data.registro,
         wallet: data.wallet,
       });
-
-      // Atualiza UI
-      renderProfissionais();
 
       // Seleciona automaticamente o recém-cadastrado
       state.selectedProfissionalWallet = created?.wallet || data.wallet;
@@ -450,17 +455,16 @@
     el.style.borderRadius = "10px";
     el.style.border = "1px solid var(--border)";
     el.style.boxShadow = "var(--shadow)";
-    el.style.background =
-      variant === "destructive"
-        ? "color-mix(in oklab, var(--destructive), #fff 85%)"
-        : "var(--card)";
-    el.style.color =
-      variant === "destructive"
-        ? "color-mix(in oklab, var(--destructive), #000 25%)"
-        : "var(--foreground)";
+    el.style.background = variant === "destructive"
+      ? "color-mix(in oklab, var(--destructive), #fff 85%)"
+      : "var(--card)";
+    el.style.color = variant === "destructive"
+      ? "color-mix(in oklab, var(--destructive), #000 25%)"
+      : "var(--foreground)";
     el.innerHTML = `
       <div style="font-weight:700;margin-bottom:4px">${escapeHtml(title)}</div>
-      <div style="font-size:.9rem;color:var(--muted-foreground)">${escapeHtml(msg)}</div>
+      <div style="font-size:.9rem;color:var(--muted-foreground)">${escapeHtml(msg)
+      }</div>
     `;
     root.appendChild(el);
     setTimeout(() => {

@@ -32,7 +32,7 @@ interface IGerenciadorProfissionais {
         view
         returns (EntidadesProfissionais.Profissional memory);
 
-    function getAllProfissionais() external view returns (EntidadesProfissionais.Profissional[] memory)
+    function getAllProfissionais() external view returns (EntidadesProfissionais.Profissional[] memory);
 
     function ativarProfissional(address wallet) external;
     function desativarProfissional(address wallet) external;

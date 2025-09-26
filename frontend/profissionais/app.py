@@ -1,3 +1,4 @@
+import os
 from fastapi import FastAPI, HTTPException
 from fastapi.responses import HTMLResponse, FileResponse
 from pydantic import BaseModel, Field
@@ -5,17 +6,18 @@ from web3 import Web3
 from contract import address, abi
 
 w3 = Web3(Web3.HTTPProvider("https://sepolia.drpc.org"))
-contract = w3.eth.contract(address=address, abi=abi)
+address_checksum = w3.to_checksum_address(address)
+contract = w3.eth.contract(address=address_checksum, abi=abi)
 
-# Initialize FastAPI app
+admin_address = w3.to_checksum_address(os.getenv("ADMIN_ADDRESS"))
+admin_skey = os.getenv("ADMIN_SKEY")
+
 app = FastAPI(
     title="MedVault - Profissionais Frontend",
     description="Frontend interface for professional management system",
     version="1.0.0",
 )
 
-
-# Pydantic models for API requests/responses
 class NovoProfissionalRequest(BaseModel):
     wallet: str = Field(..., description="Wallet address of the professional")
     idLegado: int = Field(..., description="Legacy ID of the professional")
@@ -56,10 +58,10 @@ async def serve_scripts():
 
 @app.get("/api/profissionais")
 async def get_all_profissionais():
-    contract = w3.eth.contract(address=address, abi=abi)
     res = contract.functions.getAllProfissionais().call()
+    print(res[0])
 
-    return map(
+    return list(map(
         lambda p: ProfissionalResponse(
             wallet=p[0],
             id_legado=p[1],
@@ -69,12 +71,11 @@ async def get_all_profissionais():
             ativo=p[5],
         ),
         res,
-    )
+    ))
 
 
 @app.get("/api/profissionais/{wallet}")
 async def get_profissional(wallet: str):
-    contract = w3.eth.contract(address=address, abi=abi)
     wallet = w3.to_checksum_address(wallet)
     res = contract.functions.getProfissional(wallet).call()
     return ProfissionalResponse(
@@ -103,17 +104,15 @@ async def criar_profissional(
             ativo=request.ativo,
         ).build_transaction(
             {
-                "from": "0x5C8378C0Bc231553149266EED53C013170d0D9de",
+                "from": admin_address,
                 "gas": 300000,
                 "gasPrice": w3.eth.gas_price,
-                "nonce": w3.eth.get_transaction_count(
-                    "0x5C8378C0Bc231553149266EED53C013170d0D9de"
-                ),
+                "nonce": w3.eth.get_transaction_count(admin_address),
             }
         )
         signed_txn = w3.eth.account.sign_transaction(
             transaction,
-            "0x5f874c8d056f19746b456a5046724e00b909e23560b5c540812a35701a9690b0",
+            admin_skey,
         )
         transaction_hash = w3.eth.send_raw_transaction(signed_txn.raw_transaction)
 
@@ -131,15 +130,12 @@ if __name__ == "__main__":
     print("Starting MedVault Profissionais Frontend...")
     print("Available endpoints:")
     print("  - Main page: http://localhost:8000/")
-    print("  - Styles: http://localhost:8000/styles.css")
-    print("  - Health check: http://localhost:8000/health")
-    print("  - API info: http://localhost:8000/api/info")
     print("\nPress Ctrl+C to stop the server")
 
     uvicorn.run(
         "app:app",
         host="0.0.0.0",
         port=8000,
-        reload=True,  # Enable auto-reload for development
+        reload=True,
         log_level="info",
     )

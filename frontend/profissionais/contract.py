@@ -1,4 +1,4 @@
-address = "0x22944CcE871b9929d7ff59DDdaCC0C72Eeb30BE6"
+address = "0xB40f83837274EfF33631637CBD8aC61579f362b5"
 abi = [
 	{
 		"inputs": [],
@@ -228,6 +228,51 @@ abi = [
 		"inputs": [],
 		"stateMutability": "nonpayable",
 		"type": "constructor"
+	},
+	{
+		"inputs": [],
+		"name": "getAllProfissionais",
+		"outputs": [
+			{
+				"components": [
+					{
+						"internalType": "address",
+						"name": "wallet",
+						"type": "address"
+					},
+					{
+						"internalType": "uint256",
+						"name": "idLegado",
+						"type": "uint256"
+					},
+					{
+						"internalType": "string",
+						"name": "nome",
+						"type": "string"
+					},
+					{
+						"internalType": "enum EntidadesProfissionais.Categoria",
+						"name": "categoria",
+						"type": "uint8"
+					},
+					{
+						"internalType": "string",
+						"name": "registro",
+						"type": "string"
+					},
+					{
+						"internalType": "bool",
+						"name": "ativo",
+						"type": "bool"
+					}
+				],
+				"internalType": "struct EntidadesProfissionais.Profissional[]",
+				"name": "",
+				"type": "tuple[]"
+			}
+		],
+		"stateMutability": "view",
+		"type": "function"
 	},
 	{
 		"inputs": [
