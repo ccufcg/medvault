@@ -54,14 +54,6 @@ interface IGerenciadorProcedimento {
     event ItemAltoCustoUtilizado(uint indexed estoque_id, uint8 quantidade, uint indexed id, address indexed id_profissional);
 }
 
-interface IVerificadorCategoriaSaude {
-    function VerificarExistenciaCategoria(uint16 categoria_profissional_id) external view returns (bool); 
-}
-
-interface IVerificadorPaciente {
-    function verificarPaciente(address paciente_id) external view returns (bool);
-}
-
 interface IVerificadorProfissional {
     function verificarProfissional(address profissional_id) external view returns (bool);
 }

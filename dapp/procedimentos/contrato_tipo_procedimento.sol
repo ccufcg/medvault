@@ -4,7 +4,7 @@ pragma solidity >=0.4.0 <0.9.0;
 import "dapp/procedimentos/libs.sol";
 import "dapp/profissionais/libs.sol";
 
-contract GerenciadorTipoProcedimento is IGerenciadorTiposProcedimento, IVerificadorTipoProcedimento {
+contract GerenciadorTipoProcedimento is IGerenciadorTiposProcedimento {
     uint16 private quantos_tipos;
     mapping(uint16 => Entidades.TipoProcedimento) private tipos_procedimento;
     
@@ -41,13 +41,10 @@ contract GerenciadorTipoProcedimento is IGerenciadorTiposProcedimento, IVerifica
         Entidades.TipoProcedimento memory tipo = tipos_procedimento[id];
         while (tipos_procedimento[temp].cadastrado && temp + 1 != id) {
             tipos_procedimento[temp] = tipos_procedimento[temp + 1];
+            temp++;
         }
         tipos_procedimento[temp].cadastrado = false;
         quantos_tipos--;
         emit TipoDeletado(id, tipo.tipo, tipo.categoria);
-    }
-
-    function verificarTipoProcedimento(uint16 procedimento_id) external view returns (bool) {
-        return tipos_procedimento[procedimento_id].cadastrado;
     }
 }
