@@ -2,118 +2,14 @@
 	{
 		"inputs": [
 			{
-				"internalType": "address",
-				"name": "verificador_categoria_saude_address",
-				"type": "address"
-			}
-		],
-		"stateMutability": "nonpayable",
-		"type": "constructor"
-	},
-	{
-		"inputs": [
-			{
-				"internalType": "uint16",
-				"name": "categoria_profissional_id",
-				"type": "uint16"
-			}
-		],
-		"name": "categoriaSaudeNaoExiste",
-		"type": "error"
-	},
-	{
-		"inputs": [
-			{
-				"internalType": "address",
-				"name": "admin",
-				"type": "address"
-			},
-			{
-				"internalType": "address",
-				"name": "sender",
-				"type": "address"
-			}
-		],
-		"name": "isNotAdmin",
-		"type": "error"
-	},
-	{
-		"inputs": [],
-		"name": "tipoProcedimentoLimiteAtingido",
-		"type": "error"
-	},
-	{
-		"inputs": [
-			{
-				"internalType": "uint16",
-				"name": "tipo_procedimento_id",
-				"type": "uint16"
-			}
-		],
-		"name": "tipoProcedimentoNaoExiste",
-		"type": "error"
-	},
-	{
-		"anonymous": false,
-		"inputs": [
-			{
-				"indexed": false,
-				"internalType": "uint16",
-				"name": "id",
-				"type": "uint16"
-			},
-			{
-				"indexed": false,
 				"internalType": "string",
 				"name": "tipo",
 				"type": "string"
 			},
 			{
-				"indexed": false,
-				"internalType": "uint16",
-				"name": "categoria_profissional_id",
-				"type": "uint16"
-			}
-		],
-		"name": "TipoCadastrado",
-		"type": "event"
-	},
-	{
-		"anonymous": false,
-		"inputs": [
-			{
-				"indexed": false,
-				"internalType": "uint16",
-				"name": "id",
-				"type": "uint16"
-			},
-			{
-				"indexed": false,
-				"internalType": "string",
-				"name": "tipo",
-				"type": "string"
-			},
-			{
-				"indexed": false,
-				"internalType": "uint16",
-				"name": "categoria_profissional_id",
-				"type": "uint16"
-			}
-		],
-		"name": "TipoDeletado",
-		"type": "event"
-	},
-	{
-		"inputs": [
-			{
-				"internalType": "string",
-				"name": "tipo",
-				"type": "string"
-			},
-			{
-				"internalType": "uint16",
-				"name": "categoria_profissional_id",
-				"type": "uint16"
+				"internalType": "enum EntidadesProfissionais.Categoria",
+				"name": "categoria",
+				"type": "uint8"
 			}
 		],
 		"name": "cadastraTipo",
@@ -131,9 +27,9 @@
 						"type": "string"
 					},
 					{
-						"internalType": "uint16",
-						"name": "categoria_profissional_id",
-						"type": "uint16"
+						"internalType": "enum EntidadesProfissionais.Categoria",
+						"name": "categoria",
+						"type": "uint8"
 					},
 					{
 						"internalType": "bool",
@@ -163,6 +59,93 @@
 		"type": "function"
 	},
 	{
+		"inputs": [],
+		"stateMutability": "nonpayable",
+		"type": "constructor"
+	},
+	{
+		"inputs": [
+			{
+				"internalType": "address",
+				"name": "admin",
+				"type": "address"
+			},
+			{
+				"internalType": "address",
+				"name": "sender",
+				"type": "address"
+			}
+		],
+		"name": "isNotAdmin",
+		"type": "error"
+	},
+	{
+		"inputs": [],
+		"name": "tipoProcedimentoLimiteAtingido",
+		"type": "error"
+	},
+	{
+		"inputs": [
+			{
+				"internalType": "uint16",
+				"name": "id",
+				"type": "uint16"
+			}
+		],
+		"name": "tipoProcedimentoNaoExiste",
+		"type": "error"
+	},
+	{
+		"anonymous": false,
+		"inputs": [
+			{
+				"indexed": false,
+				"internalType": "uint16",
+				"name": "id",
+				"type": "uint16"
+			},
+			{
+				"indexed": false,
+				"internalType": "string",
+				"name": "tipo",
+				"type": "string"
+			},
+			{
+				"indexed": false,
+				"internalType": "enum EntidadesProfissionais.Categoria",
+				"name": "categoria",
+				"type": "uint8"
+			}
+		],
+		"name": "TipoCadastrado",
+		"type": "event"
+	},
+	{
+		"anonymous": false,
+		"inputs": [
+			{
+				"indexed": false,
+				"internalType": "uint16",
+				"name": "id",
+				"type": "uint16"
+			},
+			{
+				"indexed": false,
+				"internalType": "string",
+				"name": "tipo",
+				"type": "string"
+			},
+			{
+				"indexed": false,
+				"internalType": "enum EntidadesProfissionais.Categoria",
+				"name": "categoria",
+				"type": "uint8"
+			}
+		],
+		"name": "TipoDeletado",
+		"type": "event"
+	},
+	{
 		"inputs": [
 			{
 				"internalType": "uint16",
@@ -185,9 +168,9 @@
 						"type": "string"
 					},
 					{
-						"internalType": "uint16",
-						"name": "categoria_profissional_id",
-						"type": "uint16"
+						"internalType": "enum EntidadesProfissionais.Categoria",
+						"name": "categoria",
+						"type": "uint8"
 					},
 					{
 						"internalType": "bool",
@@ -198,25 +181,6 @@
 				"internalType": "struct Entidades.TipoProcedimento",
 				"name": "",
 				"type": "tuple"
-			}
-		],
-		"stateMutability": "view",
-		"type": "function"
-	},
-	{
-		"inputs": [
-			{
-				"internalType": "uint16",
-				"name": "procedimento_id",
-				"type": "uint16"
-			}
-		],
-		"name": "verificarTipoProcedimento",
-		"outputs": [
-			{
-				"internalType": "bool",
-				"name": "",
-				"type": "bool"
 			}
 		],
 		"stateMutability": "view",

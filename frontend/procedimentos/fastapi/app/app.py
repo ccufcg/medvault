@@ -23,21 +23,14 @@ def post_type_procedure(
     return type_manager.register_type_procedure(type_procedure_create)
 
 
-@app.get("/type-procedure")
-def get_type_procedure(type_procedure_get: TypeProcedureGet) -> TypeProcedure:
-    return type_manager.get_type_procedure(type_procedure_get)
+@app.get("/type-procedure/{id}")
+def get_type_procedure(id: int) -> TypeProcedure:
+    return type_manager.get_type_procedure(id)
 
 
-@app.delete("/type-procedure")
-def delete_type_procedure(
-    type_procedure_delete: TypeProcedureDelete,
-) -> TransactionCreated:
-    return type_manager.delete_type_procedure(type_procedure_delete)
-
-
-@app.get("/verify-type-procedure")
-def verify_type_procedure(type_procedure_verify: TypeProcedureGet) -> bool:
-    return type_manager.verify_existence_type_procedure(type_procedure_verify)
+@app.delete("/type-procedure/{id}")
+def delete_type_procedure(id: int) -> TransactionCreated:
+    return type_manager.delete_type_procedure(id)
 
 
 @app.get("/logs/{tx}")
