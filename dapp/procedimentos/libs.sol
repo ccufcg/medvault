@@ -66,7 +66,3 @@ interface IVerificadorEstoque {
 interface IProcedimentoStorage {
     function insertProcedimento(uint procedimento_id, address wallet) external;
 }
-
-interface IVerificadorTipoProcedimento {
-    function verificarTipoProcedimento(uint16 procedimento_id) external view returns (bool);
-}

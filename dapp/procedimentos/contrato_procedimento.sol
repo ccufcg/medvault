@@ -2,6 +2,7 @@
 pragma solidity >=0.4.0 <0.9.0;
 
 import "dapp/procedimentos/libs.sol";
+import "dapp/pacientes/IPacientes.sol";
 
 contract GerenciadorProcedimento is IGerenciadorProcedimento {
     mapping(uint => Entidades.Procedimento) private procedimentos;
@@ -13,14 +14,14 @@ contract GerenciadorProcedimento is IGerenciadorProcedimento {
     address private verificadorPaciente;
     address private verificadorProfissional;
     address private verificadorEstoque;
-    address private verificadorTipoProcedimento;
+    address private gerenciadorTipoProcedimento;
 
     constructor(address verificador_paciente, address verificador_profissional, address verificador_estoque, address verificador_tipo_procedimento) {
         admin = msg.sender;
         verificadorPaciente = verificador_paciente;
         verificadorProfissional = verificador_profissional;
         verificadorEstoque = verificador_estoque;
-        verificadorTipoProcedimento = verificador_tipo_procedimento;
+        gerenciadorTipoProcedimento = verificador_tipo_procedimento;
     }
 
     modifier isCapabaleToRegister() {
@@ -35,7 +36,8 @@ contract GerenciadorProcedimento is IGerenciadorProcedimento {
 
     function cadastrarProcedimento(address id_paciente, uint id_procedimento_anterior, uint16 tipo_procedimento_id, bool intercorrencia) external procedureExists(id_procedimento_anterior) isCapabaleToRegister returns (Entidades.Procedimento memory) {
         require(procedimento_next_id + 1 != 0, "Limite de procedimentos atingido!");
-        require(IVerificadorPaciente(verificadorPaciente).verificarPaciente(id_paciente), "Paciente nao existe");
+        require(!IPacientesFull(verificadorPaciente).existePaciente(id_paciente), "Paciente nao existe");
+        require(IGerenciadorTiposProcedimento(gerenciadorTipoProcedimento).getTipo(tipo_procedimento_id).cadastrado, "Tipo nao existe");
 
         procedimentos[procedimento_next_id].id = procedimento_next_id;
         procedimentos[procedimento_next_id].id_paciente = id_paciente;
