@@ -17,7 +17,7 @@ library Entidades{
         uint idHash;             
         uint idItemHospital;     
         uint dataValidade;       
-        EnumCategoria categoria; 
+        string categoria; 
         string descricao;        
         bool altoCusto;          
         string lote;             

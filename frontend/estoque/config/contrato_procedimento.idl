@@ -1,0 +1,367 @@
+[
+	{
+		"inputs": [
+			{
+				"internalType": "address",
+				"name": "verificador_paciente",
+				"type": "address"
+			},
+			{
+				"internalType": "address",
+				"name": "verificador_profissional",
+				"type": "address"
+			},
+			{
+				"internalType": "address",
+				"name": "verificador_estoque",
+				"type": "address"
+			},
+			{
+				"internalType": "address",
+				"name": "verificador_tipo_procedimento",
+				"type": "address"
+			}
+		],
+		"stateMutability": "nonpayable",
+		"type": "constructor"
+	},
+	{
+		"inputs": [
+			{
+				"internalType": "uint256",
+				"name": "estoque_id",
+				"type": "uint256"
+			}
+		],
+		"name": "estoqueNaoExiste",
+		"type": "error"
+	},
+	{
+		"inputs": [
+			{
+				"internalType": "address",
+				"name": "sender",
+				"type": "address"
+			}
+		],
+		"name": "isNotCapableRegisterProcedure",
+		"type": "error"
+	},
+	{
+		"inputs": [
+			{
+				"internalType": "address",
+				"name": "id_paciente",
+				"type": "address"
+			}
+		],
+		"name": "pacienteNaoExiste",
+		"type": "error"
+	},
+	{
+		"inputs": [],
+		"name": "procedimentoLimiteAtingido",
+		"type": "error"
+	},
+	{
+		"inputs": [
+			{
+				"internalType": "uint256",
+				"name": "id_procedimento",
+				"type": "uint256"
+			}
+		],
+		"name": "procedimentoNaoExiste",
+		"type": "error"
+	},
+	{
+		"anonymous": false,
+		"inputs": [
+			{
+				"indexed": true,
+				"internalType": "uint256",
+				"name": "estoque_id",
+				"type": "uint256"
+			},
+			{
+				"indexed": false,
+				"internalType": "uint8",
+				"name": "quantidade",
+				"type": "uint8"
+			},
+			{
+				"indexed": true,
+				"internalType": "uint256",
+				"name": "id",
+				"type": "uint256"
+			},
+			{
+				"indexed": true,
+				"internalType": "address",
+				"name": "id_profissional",
+				"type": "address"
+			}
+		],
+		"name": "ItemAltoCustoUtilizado",
+		"type": "event"
+	},
+	{
+		"anonymous": false,
+		"inputs": [
+			{
+				"indexed": true,
+				"internalType": "uint256",
+				"name": "estoque_id",
+				"type": "uint256"
+			},
+			{
+				"indexed": false,
+				"internalType": "uint8",
+				"name": "quantidade",
+				"type": "uint8"
+			},
+			{
+				"indexed": true,
+				"internalType": "uint256",
+				"name": "id",
+				"type": "uint256"
+			},
+			{
+				"indexed": true,
+				"internalType": "address",
+				"name": "id_profissional",
+				"type": "address"
+			}
+		],
+		"name": "MaterialCadastrado",
+		"type": "event"
+	},
+	{
+		"anonymous": false,
+		"inputs": [
+			{
+				"indexed": true,
+				"internalType": "uint256",
+				"name": "id",
+				"type": "uint256"
+			},
+			{
+				"indexed": true,
+				"internalType": "address",
+				"name": "id_profissional",
+				"type": "address"
+			}
+		],
+		"name": "NotificacaoIntercorrencia",
+		"type": "event"
+	},
+	{
+		"anonymous": false,
+		"inputs": [
+			{
+				"indexed": true,
+				"internalType": "uint256",
+				"name": "id",
+				"type": "uint256"
+			},
+			{
+				"indexed": true,
+				"internalType": "address",
+				"name": "id_paciente",
+				"type": "address"
+			},
+			{
+				"indexed": true,
+				"internalType": "address",
+				"name": "id_profissional",
+				"type": "address"
+			}
+		],
+		"name": "ProcedimentoCadastrado",
+		"type": "event"
+	},
+	{
+		"inputs": [
+			{
+				"internalType": "uint256",
+				"name": "id_procedimento",
+				"type": "uint256"
+			},
+			{
+				"internalType": "uint256",
+				"name": "estoque_id",
+				"type": "uint256"
+			},
+			{
+				"internalType": "uint8",
+				"name": "quantidade",
+				"type": "uint8"
+			}
+		],
+		"name": "adicionaMaterial",
+		"outputs": [],
+		"stateMutability": "nonpayable",
+		"type": "function"
+	},
+	{
+		"inputs": [
+			{
+				"internalType": "address",
+				"name": "id_paciente",
+				"type": "address"
+			},
+			{
+				"internalType": "uint256",
+				"name": "id_procedimento_anterior",
+				"type": "uint256"
+			},
+			{
+				"internalType": "uint16",
+				"name": "tipo_procedimento_id",
+				"type": "uint16"
+			},
+			{
+				"internalType": "bool",
+				"name": "intercorrencia",
+				"type": "bool"
+			}
+		],
+		"name": "cadastrarProcedimento",
+		"outputs": [
+			{
+				"components": [
+					{
+						"internalType": "uint256",
+						"name": "id",
+						"type": "uint256"
+					},
+					{
+						"internalType": "address",
+						"name": "id_paciente",
+						"type": "address"
+					},
+					{
+						"internalType": "address",
+						"name": "id_profissional",
+						"type": "address"
+					},
+					{
+						"internalType": "uint256",
+						"name": "id_procedimento_anterior",
+						"type": "uint256"
+					},
+					{
+						"components": [
+							{
+								"internalType": "uint256",
+								"name": "material_id",
+								"type": "uint256"
+							},
+							{
+								"internalType": "uint8",
+								"name": "quantidade",
+								"type": "uint8"
+							}
+						],
+						"internalType": "struct Entidades.MaterialUtilizado[]",
+						"name": "materiais",
+						"type": "tuple[]"
+					},
+					{
+						"internalType": "uint16",
+						"name": "tipo_procedimento_id",
+						"type": "uint16"
+					},
+					{
+						"internalType": "bool",
+						"name": "intercorrencia",
+						"type": "bool"
+					},
+					{
+						"internalType": "bool",
+						"name": "cadastrado",
+						"type": "bool"
+					}
+				],
+				"internalType": "struct Entidades.Procedimento",
+				"name": "",
+				"type": "tuple"
+			}
+		],
+		"stateMutability": "nonpayable",
+		"type": "function"
+	},
+	{
+		"inputs": [
+			{
+				"internalType": "uint256",
+				"name": "id",
+				"type": "uint256"
+			}
+		],
+		"name": "getProcedimento",
+		"outputs": [
+			{
+				"components": [
+					{
+						"internalType": "uint256",
+						"name": "id",
+						"type": "uint256"
+					},
+					{
+						"internalType": "address",
+						"name": "id_paciente",
+						"type": "address"
+					},
+					{
+						"internalType": "address",
+						"name": "id_profissional",
+						"type": "address"
+					},
+					{
+						"internalType": "uint256",
+						"name": "id_procedimento_anterior",
+						"type": "uint256"
+					},
+					{
+						"components": [
+							{
+								"internalType": "uint256",
+								"name": "material_id",
+								"type": "uint256"
+							},
+							{
+								"internalType": "uint8",
+								"name": "quantidade",
+								"type": "uint8"
+							}
+						],
+						"internalType": "struct Entidades.MaterialUtilizado[]",
+						"name": "materiais",
+						"type": "tuple[]"
+					},
+					{
+						"internalType": "uint16",
+						"name": "tipo_procedimento_id",
+						"type": "uint16"
+					},
+					{
+						"internalType": "bool",
+						"name": "intercorrencia",
+						"type": "bool"
+					},
+					{
+						"internalType": "bool",
+						"name": "cadastrado",
+						"type": "bool"
+					}
+				],
+				"internalType": "struct Entidades.Procedimento",
+				"name": "",
+				"type": "tuple"
+			}
+		],
+		"stateMutability": "view",
+		"type": "function"
+	}
+]

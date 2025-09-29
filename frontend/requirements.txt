@@ -1,0 +1,5 @@
+flask
+web3
+flask-cors
+flask-swagger-ui
+dotenv
