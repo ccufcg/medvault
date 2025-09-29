@@ -38,11 +38,11 @@ interface IGerenciadorProfissionais {
     function desativarProfissional(address wallet) external;
 
     function isProfissionalAtivo(address wallet) external view returns (bool);
+    event ProfissionalCadastrado(address indexed wallet, uint indexed legacyId);
+    event ProfissionalAtivado(address indexed wallet, address indexed by);
+    event ProfissionalDesativado(address indexed wallet, address indexed by);
 }
 
-event ProfissionalCadastrado(address indexed wallet, uint indexed legacyId);
-event ProfissionalAtivado(address indexed wallet, address indexed by);
-event ProfissionalDesativado(address indexed wallet, address indexed by);
 
 error enderecoZero();
 error profissionalJaCadastrado(address wallet);

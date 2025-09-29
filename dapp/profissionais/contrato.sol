@@ -17,7 +17,7 @@ contract ProfissionalManager is IGerenciadorProfissionais, IVerificadorProfissio
     }
 
     modifier onlyAdmin() {
-        if (msg.sender != owner) revert isNotAdmin(owner, msg.sender);
+        require(msg.sender == owner, "Nao e administrador");
         _;
     }
 

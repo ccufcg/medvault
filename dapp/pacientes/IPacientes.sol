@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: MIT
-pragma solidity ^0.8.24;
+pragma solidity >=0.4.0 <0.9.0;
 
 interface IPacientesFull {
 
@@ -22,11 +22,11 @@ interface IPacientesFull {
     event ProcedimentoRegistrado(uint256 indexed idPaciente, bytes32 procedimentoId);
     event NotificacaoMedico(uint256 indexed idPaciente, string motivo);
 
-    function hasRole(bytes32 role, address account) external view returns (bool);
-    function getRoleAdmin(bytes32 role) external view returns (bytes32);
-    function grantRole(bytes32 role, address account) external;
-    function revokeRole(bytes32 role, address account) external;
-    function renounceRole(bytes32 role, address account) external;
+    // function hasRole(bytes32 role, address account) external view returns (bool);
+    // function getRoleAdmin(bytes32 role) external view returns (bytes32);
+    // function grantRole(bytes32 role, address account) external;
+    // function revokeRole(bytes32 role, address account) external;
+    // function renounceRole(bytes32 role, address account) external;
 
     function registrarPaciente(string memory _nome, uint256 _dataNascimento) external;
     function registrarPacienteComWallet(address _wallet, string memory _nome, uint256 _dataNascimento) external;

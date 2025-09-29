@@ -1,25 +1,13 @@
 // SPDX-License-Identifier: MIT
-pragma solidity ^0.8.18;
+pragma solidity >=0.4.0 <0.9.0;
 
-import "./libs.sol";
+import "dapp/pacientes/IPacientes.sol";
 
-contract PacientesNoAccessControl is IVerificadorPaciente {
+contract PacientesNoAccessControl is IPacientesFull {
 
     address private owner;
     address public diretorMedico;
     mapping(address => bool) private medicos;
-
-    struct Procedimento {
-        string nome;
-    }
-
-    struct Paciente {
-        uint256 id;
-        address idMedico;
-        string nome;
-        uint256 dataNascimento;
-        bool pacienteAtivo;
-    }
 
     mapping(uint256 => Paciente) public pacientes;
     mapping(uint256 => address[]) private pacienteWallets;
@@ -27,13 +15,6 @@ contract PacientesNoAccessControl is IVerificadorPaciente {
     mapping(uint256 => bytes32[]) private pacienteProcedimentos;
     
     uint256 private idCounter;
-
-    event PacienteRegistrado(uint256 indexed id, address indexed walletId);
-    event PacienteDesativado(uint256 indexed id);
-    event PacienteAtualizado(uint256 indexed id, address novoMedico);
-    event WalletAssociada(uint256 indexed id, address wallet);
-    event ProcedimentoRegistrado(uint256 indexed idPaciente, bytes32 procedimentoId);
-    event NotificacaoMedico(uint256 indexed idPaciente, string motivo);
 
     modifier onlyDiretorMedico() {
         require(msg.sender == diretorMedico, "Nao autorizado, apenas o Diretor pode realizar essa operacao");
@@ -121,7 +102,7 @@ contract PacientesNoAccessControl is IVerificadorPaciente {
         emit NotificacaoMedico(_pacienteId, _motivo);
     }
 
-    function verificarPaciente(address _wallet) public view override returns (bool) {
+    function existePaciente(address _wallet) public view returns (bool) {
         return walletToPacienteId[_wallet] != 0;
     }
 
