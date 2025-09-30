@@ -10,11 +10,3 @@ class TypeProcedure(BaseModel):
 class TypeProcedureCreate(BaseModel):
     tipo: str
     categoria_profissional_id: int
-
-
-class TypeProcedureGet(BaseModel):
-    id: int
-
-
-class TypeProcedureDelete(BaseModel):
-    id: int

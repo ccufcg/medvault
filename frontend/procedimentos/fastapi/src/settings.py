@@ -19,5 +19,6 @@ class Settings:
     admin_address = getenv("ADMIN_ADDRESS")
     admin_private_key = getenv("ADMIN_PRIVATE_KEY")
     type_contract_address: Address = getenv("TYPE_PROCEDURE_ADDRESS")  # type: ignore
+    procedure_contract_address: Address = getenv("PROCEDURE_ADDRESS")  # type: ignore
     type_register_gas: str = getenv("TYPE_REGISTER_GAS")  # type: ignore
     type_contract_info: Any = TYPE_PROCEDURE_ABI

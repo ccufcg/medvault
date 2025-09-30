@@ -8,7 +8,7 @@ from web3.exceptions import TimeExhausted
 from json import loads
 from typing import Any
 
-from src.transaction import TransactionGet
+from src.model import TransactionGet
 from src.settings import Settings
 
 
