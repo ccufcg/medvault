@@ -8,8 +8,8 @@ from src.type_procedure.model import (
     TypeProcedure,
     TypeProcedureCreate,
 )
-from src.transaction import TransactionCreated
-from src.web3_manager import Web3Manager
+from src.model import TransactionCreated
+from src.web3.http import Web3Manager
 
 
 class TypeManager:

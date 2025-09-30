@@ -49,6 +49,11 @@ def get_procedure(id: int) -> Procedure:
     return procedure_manager.get_procedure(id)
 
 
+@app.websocket("/dashboard")
+async def dashboard():
+    return procedure_manager.dashboard()
+
+
 @app.get("/logs/{tx}")
 def get_transaction_receipt(tx: str) -> TransactionGet:
     return web3_manager.get_transaction_receipt(tx)

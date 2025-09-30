@@ -1,9 +1,8 @@
 from eth_typing import Address
 from fastapi.exceptions import HTTPException
 from web3 import Web3, HTTPProvider
-from web3.contract import Contract
+from web3.contract.contract import Contract, ContractEvent
 from web3.exceptions import TimeExhausted
-
 
 from json import loads
 from typing import Any
@@ -32,6 +31,12 @@ class Web3Manager:
 
     def checksun_address(self, address: Address) -> Address:
         return self.w3.to_checksum_address(address)  # type: ignore
+
+    def get_block_filter(self, address: Address):
+        return self.w3.eth.filter({"fromBlock": "latest", "address": address})
+
+    def wait_for_transaction_receipt(self, event):
+        return self.w3.eth.wait_for_transaction_receipt(event["transactionHash"])
 
     def sign_transaction(self, transaction):
         return self.w3.eth.account.sign_transaction(

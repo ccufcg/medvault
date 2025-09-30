@@ -1,4 +1,4 @@
-from web3.contract import Contract
+from web3.contract.contract import ContractEvent, Contract
 
 from eth_typing import Address
 from fastapi.exceptions import HTTPException
@@ -8,27 +8,36 @@ from src.procedure.model import Procedure, ProcedureCreate, ProcedureAddMaterial
 from src.model import TransactionCreated
 from src.web3.http import Web3Manager
 
+COUNTER_MAX = 1000
+
 
 class ProcedureManager:
 
     w3_manager: Web3Manager
     procedure_contract: Contract
+    contract_address: Address
     admin_address: Address
+    high_cost_event: ContractEvent
 
     def __init__(self, w3_manager: Web3Manager) -> None:
         self.w3_manager = w3_manager
-        address = self.w3_manager.checksun_address(Settings.procedure_contract_address)
+        self.contract_address = self.w3_manager.checksun_address(
+            Settings.procedure_contract_address
+        )
         self.admin_address = self.w3_manager.checksun_address(Settings.admin_address)  # type: ignore
         self.procedure_contract = w3_manager.get_contract(
-            address=address, info=Settings.type_contract_info
+            address=self.contract_address, info=Settings.procedure_info
         )
+        self.high_cost_event = self.procedure_contract.events.ItemAltoCustoUtilizado()
 
     def register_procedure(self, register_dto: ProcedureCreate) -> TransactionCreated:
 
         nonce = self.w3_manager.get_transaction_count()
 
+        id_paciente = self.w3_manager.checksun_address(register_dto.id_paciente)  # type: ignore
+
         transaction = self.procedure_contract.functions.cadastrarProcedimento(
-            register_dto.id_paciente,
+            id_paciente,
             register_dto.id_procedimento_anterior,
             register_dto.tipo_procedimento_id,
             register_dto.intercorrencia,
@@ -93,3 +102,12 @@ class ProcedureManager:
             transaction_url=f"http://127.0.0.1:5000/tx/{transaction_hash.hex()}",
             transaction_logs_url=f"http://127.0.0.1:8080/util/logs/{transaction_hash.hex()}",
         )
+
+    async def dashboard(self):
+        block_filter = self.w3_manager.get_block_filter(self.contract_address)
+        counter = 0
+        while counter < COUNTER_MAX:
+            for event in block_filter.get_new_entries():
+                receipt = self.w3_manager.wait_for_transaction_receipt(event)
+                result = self.high_cost_event.process_receipt(receipt)
+                yield result[0]["args"]
